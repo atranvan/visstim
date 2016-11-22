@@ -85,7 +85,7 @@ try
             stimulusInfo.stimuli(currentStimIndex).type = 'Drift';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             frameCount = 0;                 %Manual frame counter, as it is a while loop
-            while ~getvalue(q.input)
+            while ~inputSingleScan(q.input) %~getvalue(q.input)
                 frameCount = frameCount + 1;
                 % Define shifted srcRect that cuts out the properly shifted rectangular
                 % area from the texture:

@@ -56,7 +56,7 @@ try
         % then loop till it's high (a new trigger)
         
         Screen('FillRect', q.window, (255*mod(i, 2)));
-        while getvalue(q.input)
+        while inputSingleScan(q.input) %getvalue(q.input)
             Screen('Flip',q.window);
             %Quit only if 'esc' key was pressed, advance if 't' was pressed
             [~, ~, keyCode] = KbCheck;
@@ -70,7 +70,7 @@ try
         end
         
         
-        while ~getvalue(q.input)
+        while ~inputSingleScan(q.input) %~getvalue(q.input)
             Screen('Flip',q.window);
             stimulusInfo.stimuli(i).endTime = toc;
             

@@ -105,7 +105,7 @@ try
             end
             
           
-            while ~getvalue(q.input)
+            while ~inputSingleScan(q.input) %~getvalue(q.input)
                 Screen('FillRect', q.window, 0);
                 %push to screen
                 Screen('Flip',q.window);
