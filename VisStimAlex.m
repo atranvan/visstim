@@ -6,6 +6,8 @@ function [stimulusInfo, filePath] = VisStimAlex(varargin)
 %% --------------------------------- Setup---------------------------------
 % Creates input parser
 p=inputParser;
+% Sets rand seed
+RandStream.setGlobalStream(RandStream('mt19937ar','seed',sum(100*clock)));
 %% ------------------------ Program  Setup ---------------------------------
 
 % Whether or not to wait for keypresses at the beginning and end. Default
@@ -32,7 +34,7 @@ p.addParamValue('screenClear', 1)
 %       to the next orientation.
 % Ret: Retinotopy stimulus
 % freqTuning: spatiotemporal tuning (HD)
-p.addParamValue('experimentType', 'HD');
+p.addParamValue('experimentType', 'D');
 
 % testing mode:
 %0 turns off testing mode (assumes DAQ toolbox present, running on windows)
@@ -51,27 +53,32 @@ p.addParamValue('testingMode', 0)
 %
 % 'toBegin' - triggering begins the stimuli, but they then run untriggered
 
-p.addParamValue('triggering', 'off');
+p.addParamValue('triggering','on');% 'toBegin');
 
 % photoDiode 'on' will display a patch for photodiode readout. 'off' means
 % no patch will be displayed
-p.addParamValue('photoDiode', 'on');
+p.addParamValue('photoDiode', 'off');
 
 % add a default save path. This is safest. All timestamped stimulus files
 % will be saved here. To save a different directory, pass that directory
 % in. To suppress saving, pass an empty string ('')
-p.addParamValue('filePath', 'C:\Users\Alex\Documents\MATLAB\')
+p.addParamValue('filePath', 'C:\Users\ranczlab\Documents\MATLAB\visstim\stimfiles')
+
+% add a status file path. This allows VisStimAlex to output its current
+% status to a text file, for remote monitoring
+
+p.addParamValue('statusFilePath', 'C:\Users\ranczlab\Documents\MATLAB\visstim\stimstatus')
 
 
 % Grating parameters:
-p.addParamValue('gratingType', 0);                           % 0 creates sine grating, 1 creates square wave grating
-p.addParamValue('spaceFreqDeg',0.05);                        % spatial frequency in cycles / degree
-p.addParamValue('tempFreq',2);                               % temporal frequency in Hz
-p.addParamValue('directionsNum',4);                          % Number of different directions to display
+p.addParamValue('gratingType', 1);                           % 0 creates sine grating, 1 creates square wave grating
+p.addParamValue('spaceFreqDeg',0.02);                        % spatial frequency in cycles / degree
+p.addParamValue('tempFreq',1);                               % temporal frequency in Hz
+p.addParamValue('directionsNum',8);                          % Number of different directions to display
 
 %Run parameters
-p.addParamValue('baseLineTime', 2);
-p.addParamValue('repeats', 2);                               % Number of repeats within each run
+p.addParamValue('baseLineTime',4);
+p.addParamValue('repeats', 3000);                               % Number of repeats within each run
 p.addParamValue('randMode', 3);                               % Randomisation of stimulus order. (not applicable to Flip)
 %             0 = orderly presentation (not recommended).
 %             1 = random permutation, kept constant throughout one run
@@ -79,8 +86,8 @@ p.addParamValue('randMode', 3);                               % Randomisation of
 %             3 = maximally different directions
 
 % Experiment type specific parameters
-p.addParamValue('preDriftHoldTime', 1);                        % How long to hold the grating for, in seconds, before a drift
-p.addParamValue('driftTime', 2);                              % How long to display a drifting grating for
+p.addParamValue('preDriftHoldTime', 2);                        % How long to hold the grating for, in seconds, before a drift
+p.addParamValue('driftTime', 4);                              % How long to display a drifting grating for
 p.addParamValue('postDriftHoldTime', 1);                    % How long to hold the grating for, in seconds, after a drift
 p.addParamValue('flipTime', 0.5);                             % How long each state (white or black) should be displayed for in flipStimulus
 
@@ -102,10 +109,10 @@ p.addParamValue('retinotopyType', 'D');                          %Which type of 
 %D = drifts
 %Flip = flips
 p.addParamValue('retinotopyRandMode', 0);                       % Same as randMode, but for the order of patch presentation
-p.addParamValue('patchGridX', 6);
-p.addParamValue('patchGridY', 4);
+p.addParamValue('patchGridX', 3);
+p.addParamValue('patchGridY', 3);
 p.addParamValue('postPatchPause', 1)                            % How long, in seconds, to leave after a patch. Has no effect on stimulus generation but is used by 2p triggering (Alex)
-
+p.addParamValue('patchSubset', [1 1 1;1 1 1;1 1 1])
 % Sparse Noise parameters
 p.addParamValue('spotSizeMean', 20);
 p.addParamValue('spotSizeRange', 5);
@@ -113,17 +120,17 @@ p.addParamValue('spotNumberMean', 8);
 p.addParamValue('spotNumberStd', 1);
 p.addParamValue('spotTime', 1);
 p.addParamValue('nStimFrames', 300);
-
+p.addParamValue('spotFrame', [0 0 1 1]);  % [l t r b] 
 % Frequency tuning
-p.addParamValue('directionForFreqTuning', 180)
+p.addParamValue('directionForFreqTuning', 160)
 %% --------------- System Parameters ---------------
 % There should not, normally, be any reason for these to be changed.
 
 p.addParamValue('gratingTextureSize', 4) %The factor by which to enlarge gratings, relative to the size of the screen
 
 %NI card parameters
-p.addParamValue('inputLine', 3);
-p.addParamValue('inputPort', 1);
+p.addParamValue('inputLine', 7);
+p.addParamValue('inputPort', 0);
 p.addParamValue('deviceName','Dev1');
 KbName('UnifyKeyNames')                 %Needed fpr cross-platform compatibility
 %% --------------------Parse Inputs------------------------------------------
@@ -136,6 +143,15 @@ catch err
         clear mex
         rethrow(err)
 end
+
+%% Open status file, and write status
+if ~isempty(q.statusFilePath)
+    q.fid=fopen(q.statusFilePath, 'w');
+    fprintf(q.fid, 'MATLAB initialised. Beginning PTB initialisation...');
+else
+    q.fid=-1;
+end
+
 %% -------------------Start PTB ------------------------------------------
 try
     if q.testingMode > 1
@@ -152,7 +168,20 @@ try
 catch
     clear mex
     fprintf('PTB Init failure \n')
+    if q.fid>-1;fprintf(q.fid, 'Failed\n');fclose(q.fid);end
     return
+end
+% Output status to status file
+if q.fid>-1
+    fprintf(q.fid, 'Success!\nBeginning ');
+    if strcmpi(q.triggering, 'on')
+        fprintf(q.fid, 'triggered');
+    elseif strcmpi(q.triggering, 'of')
+        fprintf(q.fid, 'untriggered');
+    elseif strcmpi(q.triggering, 'toBegin')
+        fprintf(q.fid, 'trigToBegin');
+    end
+    fprintf(q.fid, ' %s experiment.\n', q.experimentType);
 end
 %% --------------- Calculated Properties ---------------
 
@@ -196,13 +225,15 @@ else
     q.gratingtex=Screen('MakeTexture', q.window, g);
 end
 %Decide where we're going to save it
-q.fileName = datestr(now, 'yyyymmdd_HH_MM_SS');
+q.fileName = [datestr(now, 'yyyymmdd_HH_MM_SS'), '_', q.experimentType];
 
 % We're ready. Wait for a keypress if we're in keyWait mode
 if q.keyWait
     KbWait;
 end
-
+if q.fid>-1
+    fprintf(q.fid, 'All preparations complete. Ready to begin\n');
+end
 %Choose which stimulus function to call based on whether triggering is on,
 %and on experiment type
 try
@@ -262,7 +293,7 @@ try
                    error('Unsupported Mode')
             end
         case 'toBegin'
-            q.input=initialisedio(q);
+            q.input =initialisedio(q);
             switch q.experimentType
                 case 'Flip'
                     stimulusInfo = flipStimulus(q);
@@ -300,10 +331,19 @@ catch err
         Screen('CloseAll')
         clear mex
         fprintf('Program terminated before stimulus presentation \n stimulusInfo will not be saved \n')
+        % Write to file if the file exists
+        if q.fid>-1
+            fprintf('\nProgram manually terminated. \n stimulusInfo will not be saved \n')
+            fclose(q.fid);
+        end
         stimulusInfo=[];
         return
     else
         clear mex
+         if q.fid>-1
+            fprintf(q.fid, '\n\tError: %s\n', err.message);
+            fclose(q.fid);
+        end
         rethrow(err)
     end
 end
@@ -330,6 +370,14 @@ end
 if ~isempty(q.filePath)
     filePath = fullfile(q.filePath, q.fileName);
     save(filePath, 'stimulusInfo')
+    if q.fid>-1
+        if isempty(stimulusInfo.stimuli(end).endTime)
+            fprintf(q.fid, 'Terminated early.\nPartial stimulus info saved to %s\n', filePath);
+        else
+            fprintf(q.fid, 'Complete.\nStimulus info saved to %s\n', filePath);
+        end
+        fclose(q.fid);
+    end
 end
 
 if q.keyWait
