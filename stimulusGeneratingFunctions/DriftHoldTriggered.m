@@ -13,7 +13,7 @@ function stimulusInfo = DriftHoldTriggered(q)
 % Ouput:
 %   stimulusInfo
 %       .experimentType         'DH'
-%       .triggering             'off'
+%       .triggering             'on'
 %       .baseLineTime           a copy of baseLineTime
 %       .baseLineSFrames        stimulus frames during baseline (calculated)
 %       .directionsNum          Number of different directions displayed

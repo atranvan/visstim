@@ -3,6 +3,8 @@ function [stimulusInfo] = setstimulusinfobasicparams(q)
 %information copied from the set VisStimAlex parameters.
 %
 %Used by all stimulus scripts.
+% 2017-03-31 modified by ATVM to add Plaid stimulus and DriftGray stimulus
+
 stimulusInfo.experimentType = q.experimentType;
 stimulusInfo.triggering = q.triggering;
 
@@ -14,7 +16,7 @@ end
 switch q.experimentType
     case 'Flip'
         stimulusInfo.repeats=q.repeats;
-    case {'D', 'HD', 'HDH', 'DH'}
+    case {'D', 'HD', 'HDH', 'DH','P', 'DG'}
         stimulusInfo.directionsNum = q.directionsNum;
         stimulusInfo.repeats = q.repeats;
     case'Ret'
