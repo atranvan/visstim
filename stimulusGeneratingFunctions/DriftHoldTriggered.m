@@ -13,7 +13,7 @@ function stimulusInfo = DriftHoldTriggered(q)
 % Ouput:
 %   stimulusInfo
 %       .experimentType         'DH'
-%       .triggering             'on'
+%       .triggering             'off'
 %       .baseLineTime           a copy of baseLineTime
 %       .baseLineSFrames        stimulus frames during baseline (calculated)
 %       .directionsNum          Number of different directions displayed
@@ -96,7 +96,7 @@ try
             %a definable time during which a trigger has no effect
             stimulusInfo.stimuli(currentStimIndex).type = 'PostDriftHold';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
-            while ~inputSingleScan(q.input)%~getvaluegetvalue(q.input)
+            while inputSingleScan(q.input)%~getvalue(q.input)
                 Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, 0,q.photoDiodeRect )

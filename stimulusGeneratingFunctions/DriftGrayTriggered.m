@@ -91,7 +91,7 @@ try
             %a definable time during which a trigger has no effect
             stimulusInfo.stimuli(currentStimIndex).type = 'PostDriftGray';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
-            while ~inputSingleScan(q.input)
+            while inputSingleScan(q.input)
                 Screen('FillRect', q.window, 127);
                 
                 if q.photoDiodeRect(2)
