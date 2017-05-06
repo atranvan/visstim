@@ -37,6 +37,9 @@ p.addParamValue('screenClear', 1)
 % Ret: Retinotopy stimulus
 % freqTuning: spatiotemporal tuning (HD)
 % P : Plaid
+% DG: Dynamic grating followed by a gray screen
+% PG: Plaid followed by a gray screen
+
 p.addParamValue('experimentType', 'P');
  
 % testing mode:
@@ -279,7 +282,12 @@ try
                     stimulusInfo.plaidAngle=q.plaidAngle;
                 case 'DG'
                     stimulusInfo=DriftGray(q);
-                    stimulusInfo.driftTime=q.Driftime;
+                    stimulusInfo.driftTime=q.drifTime;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                case 'PG'
+                    stimulusInfo=PlaidGray(q);
+                    stimulusInfo.driftTime=q.driftTime;
+                    stimulusInfo.plaidAngle=q.plaidAngle;
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
                 otherwise
                     error('Unsupported Mode')
@@ -313,8 +321,13 @@ try
                     stimulusInfo=RetinotopyDriftTriggered(q);
                 case 'DG'
                     stimulusInfo=DriftGrayTriggered(q);
-                    stimulusInfo.driftTime=q.Driftime;
+                    stimulusInfo.driftTime=q.drifTime;
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                case 'PG'
+                    stimulusInfo=PlaidGrayTriggered(q);
+                    stimulusInfo.driftTime=q.drifTime;
+                    stimulusInfo.plaidAngle=q.plaidAngle;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;     
                 otherwise
                    error('Unsupported Mode')
             end
@@ -340,6 +353,19 @@ try
                     stimulusInfo.preDriftHoldTime = q.preDriftHoldTime;
                     stimulusInfo.driftTime = q.driftTime;
                     stimulusInfo.postDriftHoldTime = q.postDriftHoldTime;
+                case 'DG'
+                    stimulusInfo = DriftGray(q);
+                    stimulusInfo.driftTime = q.driftTime;
+                    stimulusInfo.postDriftHoldTime = q.postDriftGrayTime;
+                case 'P'
+                    stimulusInfo=Plaid(q);
+                    stimulusInfo.driftTime = q.driftTime;
+                    stimulusInfo.plaidAngle=q.plaidAngle;
+                case 'PG'
+                    stimulusInfo=PlaidGray(q);
+                    stimulusInfo.driftTime=q.driftTime;
+                    stimulusInfo.plaidAngle=q.plaidAngle;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
                 case 'Ret'
                     stimulusInfo=RetinotopyDrift(q);
                 case 'spn'

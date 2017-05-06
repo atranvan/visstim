@@ -389,6 +389,74 @@ switch q.experimentType
                     end
                 end
         end
+        case 'PG'
+        %Preallocate
+        stimulusInfo.stimuli = struct('type', [], 'repeat', [], 'num', [], 'direction', [], 'startTime', [], 'endTime', []);
+        stimulusInfo.stimuli(q.repeats * q.directionsNum*2).type=[];
+        
+        % This switch structure preloads the stimuli struct with the desired
+        % directions
+        currentStimIndex = 0;
+        switch q.randMode
+            case 0 %Orderly progression of gratings
+                for repeat = 1:q.repeats
+                    for d=1:q.directionsNum
+                        stimulusInfo.stimuli(currentStimIndex*2+1).repeat = repeat;
+                        stimulusInfo.stimuli(currentStimIndex*2+1).num = d;
+                        stimulusInfo.stimuli(currentStimIndex*2+1).direction = (d-1)*360/q.directionsNum; % just dump in the angles in order, starting from 0
+                        stimulusInfo.stimuli(currentStimIndex*2+2).repeat = repeat;
+                        stimulusInfo.stimuli(currentStimIndex*2+2).num = d;
+                        stimulusInfo.stimuli(currentStimIndex*2+2).direction = (d-1)*360/q.directionsNum;
+                        
+                        currentStimIndex = currentStimIndex + 1;
+                    end
+                end
+            case 1 % Assign a pseudorandom order to be used in each repetition
+                order = randperm(q.directionsNum);
+                directionsOrder = (order-1) * 360/q.directionsNum;
+                for repeat = 1:q.repeats
+                    for d=1:q.directionsNum
+                        stimulusInfo.stimuli(currentStimIndex*2+1).repeat = repeat;
+                        stimulusInfo.stimuli(currentStimIndex*2+1).num = d;
+                        stimulusInfo.stimuli(currentStimIndex*2+1).direction = directionsOrder(d); % assign the appropriate direction
+                        stimulusInfo.stimuli(currentStimIndex*2+2).repeat = repeat;
+                        stimulusInfo.stimuli(currentStimIndex*2+2).num = d;
+                        stimulusInfo.stimuli(currentStimIndex*2+2).direction = directionsOrder(d);
+                        
+                        currentStimIndex = currentStimIndex + 1;
+                    end
+                end
+            case 2 % Assign a new pseudorandom order for each repetition
+                for repeat = 1:q.repeats
+                    order = randperm(q.directionsNum);
+                    directionsOrder = (order-1) * 360/q.directionsNum;
+                    for d=1:q.directionsNum
+                        stimulusInfo.stimuli(currentStimIndex*2+1).repeat = repeat;
+                        stimulusInfo.stimuli(currentStimIndex*2+1).num = d;
+                        stimulusInfo.stimuli(currentStimIndex*2+1).direction = directionsOrder(d); % assign the appropriate direction
+                        stimulusInfo.stimuli(currentStimIndex*2+2).repeat = repeat;
+                        stimulusInfo.stimuli(currentStimIndex*2+2).num = d;
+                        stimulusInfo.stimuli(currentStimIndex*2+2).direction = directionsOrder(d);
+                        
+                        currentStimIndex = currentStimIndex + 1;
+                    end
+                end
+            case 3
+                order = maximallyDifferentDirections(q.directionsNum);
+                directionsOrder = (order-1) * 360/q.directionsNum;
+                for repeat = 1:q.repeats
+                    for d=1:q.directionsNum
+                        stimulusInfo.stimuli(currentStimIndex*2+1).repeat = repeat;
+                        stimulusInfo.stimuli(currentStimIndex*2+1).num = d;
+                        stimulusInfo.stimuli(currentStimIndex*2+1).direction = directionsOrder(d); % assign the appropriate direction
+                        stimulusInfo.stimuli(currentStimIndex*2+2).repeat = repeat;
+                        stimulusInfo.stimuli(currentStimIndex*2+2).num = d;
+                        stimulusInfo.stimuli(currentStimIndex*2+2).direction = directionsOrder(d);
+                        
+                        currentStimIndex = currentStimIndex + 1;
+                    end
+                end
+        end
     case 'Ret'
         nPatches = q.patchGridDimensions(1)*q.patchGridDimensions(2);
         

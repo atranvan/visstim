@@ -16,7 +16,7 @@ end
 switch q.experimentType
     case 'Flip'
         stimulusInfo.repeats=q.repeats;
-    case {'D', 'HD', 'HDH', 'DH','P', 'DG'}
+    case {'D', 'HD', 'HDH', 'DH','P', 'DG','PG'}
         stimulusInfo.directionsNum = q.directionsNum;
         stimulusInfo.repeats = q.repeats;
     case'Ret'

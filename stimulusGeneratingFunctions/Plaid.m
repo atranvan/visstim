@@ -19,7 +19,7 @@ function stimulusInfo =  Plaid(q)
 %       .actualBaseLineTime     how long baseLine actually was (tictoc)
 %       .stimuli                a 1 x m struct array:
 %               m = repeat * 2 - a complete list of states
-%                   .type           'Drift'
+%                   .type           'Plaid'
 %                   .repeat         Which repetition, within the run, this
 %                                      drift was in
 %                   .num            Which number, within a repetition this
@@ -71,8 +71,9 @@ else
 end
 %The Display Loop - Displays the grating at predefined orientations from
 %the switch structure
-Screen('FillRect',q.window,WhiteIndex(max(Screen('Screens'))));
+
 try
+
     for repeat = 1:q.repeats
         for d=1:q.directionsNum
             %Record absolute and relative stimulus start time
@@ -86,7 +87,7 @@ try
                 srcRect=[xoffset 0 (xoffset + q.screenRect(3)*2) q.screenRect(4)*2];
                 
                 %Draw grating texture, rotated by "angle":
-                
+                Screen('FillRect',q.window,WhiteIndex(max(Screen('Screens'))));
                 Screen('DrawTexture', q.window, gratingtex, srcRect, [], thisDirection);
                 Screen('DrawTexture', q.window, gratingtex, srcRect, [], thisDirection+q.plaidAngle); % second grating is rotated by value in plaidAngle in degrees
 

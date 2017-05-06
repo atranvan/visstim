@@ -1,8 +1,7 @@
-function stimulusInfo =  PlaidTriggered(q)
-% PLAID displays a moving plaid (2 overlaid gratings), angle between two
-% gratings determined by plaidAngle parameters (in degree, default = 90), for a defined time period,
-%then holds this grating until a trigger
-%
+function stimulusInfo =  PlaidGray(q)
+% PLAIDGRAY displays a moving plaid (2 overlaid gratings), angle between two
+% gratings determined by plaidAngle parameters (in degree, default = 90),
+% followed by a gray screen for a defined period
 %
 % Inputs:
 %
@@ -11,7 +10,9 @@ function stimulusInfo =  PlaidTriggered(q)
 % Ouput:
 %   stimulusInfo
 %       .experimentType         'P'
-%       .triggering             'on'
+%       .triggering             'off'
+%       .baseLineTime           a copy of baseLineTime
+%       .baseLineSFrames        stimulus frames during baseline (calculated)
 %       .directionsNum          Number of different directions displayed
 %       .repeats
 %       .experimentStartTime    what time the experiment started (beginning
@@ -39,8 +40,7 @@ function stimulusInfo =  PlaidTriggered(q)
 % (it's just easier that way. Think of them as outputs.)
 
 %---------------------------Initialisation--------------------------------
-q.input = initialisedio(q);
-[DG_SpatialPeriod, DG_ShiftPerFrame] = getDGparams(q);
+[DG_SpatialPeriod, DG_ShiftPerFrame, DG_DirectionFrames] = getDGparams(q);
 
 %Initialise the output variable
 stimulusInfo = setstimulusinfobasicparams(q);
@@ -52,7 +52,7 @@ stimulusInfo = setstimulusinfostimuli(stimulusInfo, q);
 % white bars are summed
 stimulusInfo.experimentStartTime = now;
 tic
-runbaseline(q, stimulusInfo);
+runbaseline(q, stimulusInfo)
 stimulusInfo.actualBaseLineTime = toc;
 Priority(MaxPriority(q.window));                           % Needed to ensure maximum performance
 
@@ -72,30 +72,28 @@ else
 end
 %The Display Loop - Displays the grating at predefined orientations from
 %the switch structure
-Screen('FillRect',q.window,WhiteIndex(max(Screen('Screens'))));
+
 try
+
+    currentStimIndex = 0;  
     for repeat = 1:q.repeats
         for d=1:q.directionsNum
+            currentStimIndex = currentStimIndex + 1;
             %Record absolute and relative stimulus start time
-            stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).startTime = toc;
-            stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).type='Drift';
-            thisDirection = stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).direction + 90;       %0, the first orientation, corresponds to movement towards the top of the screen
-            frameCount = 0;  
-            
-            % Loop while value is high, in case there is trigger overrun from a      
-            % previous trigger. Then loop while value is low - so until the           
-            % next trigger                                                            
-            while inputSingleScan(q.input) %getvalue(q.input)                         
-                frameCount = frameCount + 1;
+%             stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).startTime = toc;
+%             stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).type='Drift';
+%             thisDirection = stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).direction + 90 %0, the first orientation, corresponds to movement towards the top of the screen
+            thisDirection = stimulusInfo.stimuli(currentStimIndex).direction + 90;
+            for frameCount= 1:DG_DirectionFrames;
                 %Define shifted srcRect that cuts out the properly shifted rectangular
                 %area from the texture:
                 xoffset = mod(frameCount*DG_ShiftPerFrame,DG_SpatialPeriod);
                 srcRect=[xoffset 0 (xoffset + q.screenRect(3)*2) q.screenRect(4)*2];
                 
                 %Draw grating texture, rotated by "angle":
-                
+                Screen('FillRect',q.window,WhiteIndex(max(Screen('Screens'))));
                 Screen('DrawTexture', q.window, gratingtex, srcRect, [], thisDirection);
-                Screen('DrawTexture', q.window, gratingtex, srcRect, [], thisDirection+q.plaidAngle); % second grating is rotated by 120degrees
+                Screen('DrawTexture', q.window, gratingtex, srcRect, [], thisDirection+q.plaidAngle); % second grating is rotated by value in plaidAngle in degrees
 
                 if q.photoDiodeRect(2)
                     if frameCount == 1
@@ -105,50 +103,33 @@ try
                     end
                 end
                 Screen('Flip',q.window);
-                
-                %Quit only if 'esc' key was pressed, advance if 't' was pressed
-                [~, ~, keyCode] = KbCheck;
-                if keyCode(KbName('escape')), error('escape'), end
-                if keyCode(KbName('t'))
-                    %wait for keypress to end (=key up) before breaking
-                    while KbCheck
-                    end
-                    break
-                end
-            end
-            while ~inputSingleScan(q.input) %~getvalue(q.input)                      
-                frameCount = frameCount + 1;                                         
-                % Define shifted srcRect that cuts out the properly shifted rectangular 
-                % area from the texture:                                             
-                xoffset = mod(frameCount*DG_ShiftPerFrame,DG_SpatialPeriod);         
-                srcRect=[xoffset 0 (xoffset + q.screenRect(3)*2) q.screenRect(4)*2]; 
-                % Draw grating texture, rotated by "angle":                          
-                Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
-                if q.photoDiodeRect(2)                                               
-                    if frameCount == 1                                               
-                        Screen('FillRect', q.window, 255,q.photoDiodeRect )          
-                    else                                                             
-                        Screen('FillRect', q.window, 0,q.photoDiodeRect )            
-                    end                                                              
-                end                                                                  
-                Screen('Flip',q.window);
-                
                 %Record measured stimulus display time
                 stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).endTime = toc;
             end
-            
+            %Quit only if 'esc' key was pressed
             [~, ~, keyCode] = KbCheck;
             if keyCode(KbName('escape')), error('escape'), end
-            if keyCode(KbName('t'))
-                %wait for keypress to end (=key up) before breaking
-                while KbCheck
+            currentStimIndex = currentStimIndex + 1;
+            
+            %PostDrift gray screen
+            %Record absolute and relative start time
+            stimulusInfo.stimuli(currentStimIndex).type = 'PostDriftGray';
+            stimulusInfo.stimuli(currentStimIndex).startTime = toc;
+            for holdFrames = 1:round(q.postDriftGrayTime*q.hz)
+                Screen('FillRect', q.window, 127);
+                
+                if q.photoDiodeRect(2)
+                    Screen('FillRect', q.window, 0,q.photoDiodeRect )
                 end
-                break
+                Screen('Flip',q.window);
+                stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
             end
+            
+            %Quit only if 'esc' key was pressed
+            [~, ~, keyCode] = KbCheck;
+            if keyCode(KbName('escape')), error('escape'), end
         end
-        
     end
-
 catch err
     if ~strcmp(err.message, 'escape')
         rethrow(err)
