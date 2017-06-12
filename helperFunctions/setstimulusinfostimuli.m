@@ -11,6 +11,14 @@ switch q.experimentType
             stimulusInfo.stimuli(i).state = 'white';
             stimulusInfo.stimuli(i+1).state = 'black';
         end
+    case 'fsPulse'
+        %Preallocate
+        stimulusInfo.stimuli = struct('state', [], 'startTime', [], 'endTime', []);
+        stimulusInfo.stimuli(q.repeats*2).state =[];
+        for i =1:2:length(stimulusInfo.stimuli)
+            stimulusInfo.stimuli(i).state = 'black';
+            stimulusInfo.stimuli(i+1).state = 'gray';
+        end
     case 'D'
         %Preallocate
         stimulusInfo.stimuli = struct('type', [], 'repeat', [], 'num', [], 'direction', [], 'startTime', [], 'endTime', []);

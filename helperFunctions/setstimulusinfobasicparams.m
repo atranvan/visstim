@@ -14,7 +14,7 @@ if strcmp(q.triggering, 'off')
 end
 
 switch q.experimentType
-    case 'Flip'
+    case {'Flip','fsPulse'}
         stimulusInfo.repeats=q.repeats;
     case {'D', 'HD', 'HDH', 'DH','P', 'DG','PG'}
         stimulusInfo.directionsNum = q.directionsNum;

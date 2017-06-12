@@ -35,12 +35,13 @@ p.addParamValue('screenClear', 1)
 % HDH:  Hold then dynamic then hold, all at the same orientation, then on
 %       to the next orientation.
 % Ret: Retinotopy stimulus
+
 % freqTuning: spatiotemporal tuning (HD)
 % P : Plaid
 % DG: Dynamic grating followed by a gray screen
 % PG: Plaid followed by a gray screen
 
-p.addParamValue('experimentType', 'DG');
+p.addParamValue('experimentType', 'fsPulse');
  
 % testing mode:
 %0 turns off testing mode (assumes DAQ toolbox present, running on windows)
@@ -61,6 +62,7 @@ p.addParamValue('testingMode', 0)
 
 p.addParamValue('triggering','on');% 'toBegin');
 
+
 % photoDiode 'on' will display a patch for photodiode readout. 'off' means
 % no patch will be displayed
 p.addParamValue('photoDiode', 'off');
@@ -78,12 +80,12 @@ p.addParamValue('statusFilePath', 'C:\Users\ranczLab\Documents\MATLAB\visstim\st
 
 % Grating parameters:
 p.addParamValue('gratingType', 1);                           % 0 creates sine grating, 1 creates square wave grating
-p.addParamValue('spaceFreqDeg',0.02);                        % spatial frequency in cycles / degree
+p.addParamValue('spaceFreqDeg',0.08);                        % spatial frequency in cycles / degree
 p.addParamValue('tempFreq',1);                               % temporal frequency in Hz
 p.addParamValue('directionsNum',8);                          % Number of different directions to display
 
 %Run parameters
-p.addParamValue('baseLineTime',1);
+p.addParamValue('baseLineTime',0);
 p.addParamValue('repeats', 100);                             % Number of repeats within each run
 p.addParamValue('randMode', 3);                              % Randomisation of stimulus order. (not applicable to Flip)
 %             0 = orderly presentation (not recommended).
@@ -93,15 +95,18 @@ p.addParamValue('randMode', 3);                              % Randomisation of 
 
 % Experiment type specific parameters
 p.addParamValue('preDriftHoldTime', 2);                       % How long to hold the grating for, in seconds, before a drift
-p.addParamValue('driftTime', 4);                              % How long to display a drifting grating for
-p.addParamValue('postDriftHoldTime', 1);                      % How long to hold the grating for, in seconds, after a drift
+p.addParamValue('driftTime', 0.5);                            % How long to display a drifting grating for
+p.addParamValue('postDriftHoldTime', 4);                      % How long to hold the grating for, in seconds, after a drift
 p.addParamValue('flipTime', 0.5);                             % How long each state (white or black) should be displayed for in flipStimulus
-p.addParamValue('postDriftGrayTime', 1);                      % How long to display gray screen for, in seconds, after a drift
-p.addParamValue('plaidAngle', 90);                             % angle between two components of a plaid
+p.addParamValue('postDriftGrayTime', 4);                      % How long to display gray screen for, in seconds, after a drift
+p.addParamValue('plaidAngle', 90);                            % angle between two components of a plaid
+p.addParamValue('lumscreen', 128);                            % luminance of gray screen for fullscPulse stimulus
+p.addParamValue('blackscreenTime',4);                         % How long to display a black screen for fullscPulse stimulus
+p.addParamValue('pulsescreenTime',0.5);                       % How long to display a gray screen for fullscPulse stimulus
 
 % Screen parameters:
 p.addParamValue('screenWidthCm', 56);                         % screen size in cm
-p.addParamValue('mouseDistanceCm', 19);                       % mouse distance from the screen im cm
+p.addParamValue('mouseDistanceCm', 10);                       % mouse distance from the screen im cm
 
 % Photodiode indicator patch settings
 p.addParamValue('diodePatchXSize', 100);
@@ -289,6 +294,11 @@ try
                     stimulusInfo.driftTime=q.driftTime;
                     stimulusInfo.plaidAngle=q.plaidAngle;
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                case 'fsPulse'
+                    stimulusInfo=fullscreenPulse(q);
+                    stimulusInfo.driftTime=q.driftTime;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                    stimulusInfo.lumscreen=q.lumscreen;
                 otherwise
                     error('Unsupported Mode')
             end
@@ -327,7 +337,12 @@ try
                     stimulusInfo=PlaidGrayTriggered(q);
                     stimulusInfo.driftTime=q.driftTime;
                     stimulusInfo.plaidAngle=q.plaidAngle;
-                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;     
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                case 'fsPulse'
+                    stimulusInfo=fullscreenPulseTriggered(q);
+                    stimulusInfo.driftTime=q.driftTime;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                    stimulusInfo.lumscreen=q.lumscreen;
                 otherwise
                    error('Unsupported Mode')
             end
@@ -366,6 +381,11 @@ try
                     stimulusInfo.driftTime=q.driftTime;
                     stimulusInfo.plaidAngle=q.plaidAngle;
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                case 'fsPulse'
+                    stimulusInfo=fullscreenPulse(q);
+                    stimulusInfo.driftTime=q.driftTime;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                    stimulusInfo.lumscreen=q.lumscreen;
                 case 'Ret'
                     stimulusInfo=RetinotopyDrift(q);
                 case 'spn'
@@ -402,7 +422,7 @@ end
 
 % Unless it's a flip or sparse noise (in which case it's irrelevant), add temporal and
 % spatial frequency to the output variable
-if ~sum((strcmp(q.experimentType, {'Flip', 'spn'})))
+if ~sum((strcmp(q.experimentType, {'Flip', 'spn','fsPulse'})))
     stimulusInfo.temporalFreq = q.tempFreq;
     stimulusInfo.spatialFreq = q.spaceFreqDeg;
     
