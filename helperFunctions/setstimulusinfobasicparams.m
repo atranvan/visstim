@@ -4,6 +4,7 @@ function [stimulusInfo] = setstimulusinfobasicparams(q)
 %
 %Used by all stimulus scripts.
 % 2017-03-31 modified by ATVM to add Plaid stimulus and DriftGray stimulus
+% added fsPulse, spnG, spnMap
 
 stimulusInfo.experimentType = q.experimentType;
 stimulusInfo.triggering = q.triggering;
@@ -31,6 +32,20 @@ switch q.experimentType
         stimulusInfo.spotNumberStd=q.spotNumberStd;
         stimulusInfo.spotTime=q.spotTime;
         stimulusInfo.nStimFrames=q.nStimFrames;
+        stimulusInfo.screenRect=q.screenRect;
+    case 'spnG'
+        stimulusInfo.spotSizeMean=q.spotSizeMean;
+        stimulusInfo.spotSizeRange=q.spotSizeRange;
+        stimulusInfo.spotNumberMean=q.spotNumberMean;
+        stimulusInfo.spotNumberStd=q.spotNumberStd;
+        stimulusInfo.spotTime=q.spotTime;
+        stimulusInfo.grayTime=q.postSpotGrayTime;
+        stimulusInfo.nStimFrames=q.nStimFrames;
+        stimulusInfo.screenRect=q.screenRect;
+    case 'spnMap'       
+        stimulusInfo.spotTime=q.spotTime;
+        stimulusInfo.grayTime=q.postSpotGrayTime;
+        stimulusInfo.nStimFramesMapping=q.nStimFramesMapping;
         stimulusInfo.screenRect=q.screenRect;
     case 'freqTuning'
         stimulusInfo.direction= q.directionForFreqTuning;

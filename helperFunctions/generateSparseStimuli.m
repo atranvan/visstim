@@ -5,13 +5,20 @@ stimulusInfo.spotSizes=cell(q.nStimFrames, 1);
 stimulusInfo.spotColors=cell(q.nStimFrames, 1);
 
 possLocations=true(q.screenRect(3)*2, q.screenRect(4)*2);
+if q.photoDiodeRect(2)
+     %q.photoDiodeRect = [0 q.screenRect(4)-q.diodePatchYSize q.diodePatchXSize q.screenRect(4)];
+     photodiodepos=logical([0:q.diodePatchXSize,q.screenRect(4)-q.diodePatchYSize:q.screenRect(4)]);
+     possLocations(photodiodepos)=0;
+end
 
 for i=1:q.nStimFrames
     nSpots=round(q.spotNumberMean+q.spotNumberStd*randn(1));         %Generate a random number of spots
     nSpots=max([nSpots 1]);                                          %Prevent there being no or 'negative' numbers of spots
     
+
     stimulusInfo.spotSizes{i}=...
-        round(q.spotSizeMean+(2*(rand(nSpots, 1))-1)*q.spotSizeRange); %Generate random spot sizes
+        round(q.spotSizeMean_pix+(2*(rand(nSpots, 1))-1)*q.spotSizeRange_pix); %Generate random spot sizes
+
     spotCols=(round(rand(1, nSpots)));                                 %Generate random spot colors
     stimulusInfo.spotColors{i}=cat(1, spotCols, spotCols, spotCols);   %...and convert to RGB
     

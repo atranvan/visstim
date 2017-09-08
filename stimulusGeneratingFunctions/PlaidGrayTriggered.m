@@ -47,30 +47,13 @@ q.input = initialisedio(q);
 stimulusInfo = setstimulusinfobasicparams(q);
 stimulusInfo = setstimulusinfostimuli(stimulusInfo, q);
 
-%--------------------------------------------------------------------------
-% This is kind of a workaround to superimpose two sets of gratings
-% blending the default gratings (as generated in Drift) would look like the
-% white bars are summed
 stimulusInfo.experimentStartTime = now;
 tic
 runbaseline(q, stimulusInfo)
 stimulusInfo.actualBaseLineTime = toc;
 Priority(MaxPriority(q.window));                           % Needed to ensure maximum performance
 
-white = WhiteIndex(max(Screen('Screens')));
-black = BlackIndex(max(Screen('Screens')));
-grey = white / 2;
-gplaid=grey+grey*GratingAlex(q.gratingType,(q.screenRect(1)+1:q.screenRect(3)*q.gratingTextureSize), (q.screenRect(2)+1:q.screenRect(4)*q.gratingTextureSize), 0, q.spaceFreqPixels);
-plaidgrating=ones(length(q.screenRect(2)+1:q.screenRect(4)*q.gratingTextureSize),length(q.screenRect(1)+1:q.screenRect(3)*q.gratingTextureSize), 2) * black;
 
-plaidgrating(:, :, 2)= gplaid.* 1;
-if ndims(gplaid)>2&&size(gplaid, 3)>1
-    for ii=1:size(g, 3)
-        gratingtex(ii)=Screen('MakeTexture', q.window, squeeze(plaidgrating(:,:,ii)));
-    end
-else
-    gratingtex=Screen('MakeTexture', q.window, plaidgrating);
-end
 %The Display Loop - Displays the grating at predefined orientations from
 %the switch structure
 
@@ -93,15 +76,15 @@ try
                 
                 %Draw grating texture, rotated by "angle":
                 Screen('FillRect',q.window,WhiteIndex(max(Screen('Screens'))));
-                Screen('DrawTexture', q.window, gratingtex, srcRect, [], thisDirection);
-                Screen('DrawTexture', q.window, gratingtex, srcRect, [], thisDirection+q.plaidAngle); % second grating is rotated by value in plaidAngle in degrees
+                Screen('DrawTexture', q.window, q.gratingplaidtex, srcRect, [], thisDirection);
+                Screen('DrawTexture', q.window, q.gratingplaidtex, srcRect, [], thisDirection+q.plaidAngle); % second grating is rotated by value in plaidAngle in degrees
 
                 if q.photoDiodeRect(2)
-                    if frameCount == 1
+%                     if frameCount == 1
                         Screen('FillRect', q.window, 255,q.photoDiodeRect )
-                    else
-                        Screen('FillRect', q.window, 0,q.photoDiodeRect )
-                    end
+%                     else
+%                         Screen('FillRect', q.window, 0,q.photoDiodeRect )
+%                     end
                 end
                 Screen('Flip',q.window);
                 %Record measured stimulus display time
