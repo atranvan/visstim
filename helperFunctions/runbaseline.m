@@ -7,24 +7,37 @@ function runbaseline(q, stimulusInfo)
 % and displays for that amount of time.
 % Only bother doing this if there IS a baseline requested
 %
-% Triggered mode: displays a black screen, until trigger
+% Triggered mode: displays a black screen or gray screen (color defined in VisStim via baseLineColor), until trigger
 switch q.triggering
     case 'off'
         if q.baseLineTime
+            if q.fid>-1
+                fprintf(q.fid, 'Running baseline...');
+            end
             for i = 1:floor(stimulusInfo.baseLineSFrames)
-                Screen('FillRect', q.window, 0);
+                Screen('FillRect', q.window, q.baseLineColor);
                 Screen('Flip',q.window);
                 %Quit only if 'esc' key was pressed
                 [~, ~, keyCode] = KbCheck;
                 if keyCode(KbName('escape')), error('escapeBsl'), end
             end
+            if q.fid>-1
+                fprintf(q.fid, 'Complete.\nBeginning stimulus...\n');
+            end
         end
     case {'on', 'toBegin'}
-        % Display a black screen
-        Screen('FillRect', q.window, 0);
-        Screen('Flip',q.window);
         
-        while ~getvalue(q.input)
+        if q.fid>-1
+            fprintf(q.fid, 'Running baseline...');
+        end
+            
+        % Display a black or gray screen
+        Screen('FillRect', q.window, q.baseLineColor);
+        Screen('Flip',q.window);
+        if q.fid>-1
+            fprintf(q.fid, '\nReady for trigger to begin stimulus...');
+        end
+        while ~inputSingleScan(q.input)%~getvalue(q.input)
             %Quit only if 'esc' key was pressed, advance if 't' was pressed
             [~, ~, keyCode] = KbCheck;
             if keyCode(KbName('escape')), error('escapeBsl'), end
@@ -35,7 +48,9 @@ switch q.triggering
                 break
             end
         end
-        
+        if q.fid>-1
+            fprintf(q.fid, 'Receieved\nBeginning stimulus...');
+        end
 end
 end
 

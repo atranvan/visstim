@@ -71,7 +71,7 @@ for repeat = 1:q.repeats
         % Loop while value is high, in case there is trigger overrun from a
         % previous trigger. Then loop while value is low - so until the
         % next trigger
-        while inputSingleScan(q.input) %getvalue(q.input)
+        while getvalue(q.input)
             frameCount = frameCount + 1;
             % Define shifted srcRect that cuts out the properly shifted rectangular
             % area from the texture:
@@ -97,7 +97,7 @@ for repeat = 1:q.repeats
                 break
             end
         end
-        while ~inputSingleScan(q.input) %~getvalue(q.input)
+        while ~getvalue(q.input)
             frameCount = frameCount + 1;
             % Define shifted srcRect that cuts out the properly shifted rectangular
             % area from the texture:

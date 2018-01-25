@@ -48,9 +48,9 @@ q.input = initialisedio(q);
 
 %Initialise the output variable
 stimulusInfo = setstimulusinfobasicparams(q);
+[masktex, stimulusInfo]=patchgrid(q, stimulusInfo); % Patch Overlay Generation. Do this first, and get the modified stimulusInfo with fewer patches, if subset has been specified
 stimulusInfo = setstimulusinfostimuli(stimulusInfo, q);
 
-masktex=patchgrid(q, stimulusInfo); % Patch Overlay Generation
 
 %% Stimulus Execution
 %grey background

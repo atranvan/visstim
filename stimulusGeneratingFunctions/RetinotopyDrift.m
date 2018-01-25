@@ -105,6 +105,12 @@ for repeat = 1:q.repeats
         %Quit only if 'esc' key was pressed
         [~, ~, keyCode] = KbCheck;
         if keyCode(KbName('escape')), error('escape'), end
+        if isfield(q, 'postPatchPause')&&q.postPatchPause>0
+            for pp=1:round(q.postPatchPause*q.hz)
+                Screen('FillRect', q.window, 0)
+                Screen('Flip', q.window)
+            end
+        end
     end
 end
 catch err

@@ -9,7 +9,7 @@ function stimulusInfo =  PlaidGrayTriggered(q)
 %
 % Ouput:
 %   stimulusInfo
-%       .experimentType         'P'
+%       .experimentType         'PG'
 %       .triggering             'on'
 %       .baseLineTime           a copy of baseLineTime
 %       .baseLineSFrames        stimulus frames during baseline (calculated)
@@ -51,7 +51,7 @@ stimulusInfo.experimentStartTime = now;
 tic
 runbaseline(q, stimulusInfo)
 stimulusInfo.actualBaseLineTime = toc;
-Priority(MaxPriority(q.window));                           % Needed to ensure maximum performance
+%Priority(MaxPriority(q.window));                           % Needed to ensure maximum performance
 
 
 %The Display Loop - Displays the grating at predefined orientations from
@@ -68,7 +68,8 @@ try
 %             stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).type='Drift';
 %             thisDirection = stimulusInfo.stimuli((repeat-1)*q.directionsNum + d).direction + 90 %0, the first orientation, corresponds to movement towards the top of the screen
             thisDirection = stimulusInfo.stimuli(currentStimIndex).direction + 90;
-            for frameCount= 1:DG_DirectionFrames;
+            for frameCount= 1:round(q.driftTime * q.hz);
+           %for frameCount= 1:DG_DirectionFrames;
                 %Define shifted srcRect that cuts out the properly shifted rectangular
                 %area from the texture:
                 xoffset = mod(frameCount*DG_ShiftPerFrame,DG_SpatialPeriod);
@@ -80,11 +81,11 @@ try
                 Screen('DrawTexture', q.window, q.gratingplaidtex, srcRect, [], thisDirection+q.plaidAngle); % second grating is rotated by value in plaidAngle in degrees
 
                 if q.photoDiodeRect(2)
-%                     if frameCount == 1
+                    %if frameCount == 1
                         Screen('FillRect', q.window, 255,q.photoDiodeRect )
-%                     else
-%                         Screen('FillRect', q.window, 0,q.photoDiodeRect )
-%                     end
+                    %else
+                        %Screen('FillRect', q.window, 0,q.photoDiodeRect )
+                    %end
                 end
                 Screen('Flip',q.window);
                 %Record measured stimulus display time

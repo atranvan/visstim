@@ -1,4 +1,4 @@
-function masktex=patchgrid(q, stimulusInfo)
+function [masktex, stimulusInfo]=patchgrid(q, stimulusInfo)
 %calculate patch grid
  
  [py, px]=meshgrid(linspace(0, 1, q.patchGridDimensions(2)+1), linspace(0, 1, q.patchGridDimensions(1)+1));
@@ -23,4 +23,16 @@ function masktex=patchgrid(q, stimulusInfo)
      tmpT(:,:,1) = tmp(:,:,1)';
      tmpT(:,:,2) = tmp(:,:,2)';
      masktex(i)=Screen('MakeTexture', q.window, tmpT);
+ end
+ 
+ 
+ if isfield(q, 'patchSubset')&&~isempty(q.patchSubset)
+     if numel(q.patchSubset)~=stimulusInfo.nPatches
+         error('subset specification must contain the same number of entries as the number of patches (x*y)')
+     end
+     if ~isnumeric(q.patchSubset)||(~all((q.patchSubset(:)==1)|(q.patchSubset(:)==0)))
+         error('Please specity subset using only 1s or 0s')
+     end
+     stimulusInfo.nPatches=sum(q.patchSubset(:));
+     masktex=masktex(logical(q.patchSubset));
  end

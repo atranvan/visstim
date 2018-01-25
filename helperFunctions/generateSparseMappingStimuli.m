@@ -19,10 +19,7 @@ stimulusInfo.spotSizeDegrees=round(stimulusInfo.spotSizePixels*q.degperpix);
 stimulusInfo.Ncols=round(stimulusInfo.XSpanPixels/stimulusInfo.spotSizePixels);
 stimulusInfo.Nrows=round(stimulusInfo.YSpanPixels/stimulusInfo.spotSizePixels);
 
-%q.DotLocation = datasample(0:q.nSpots-1,q.nSpots,'Replace',false); % draw q.nSpots unique elements in random order, use to set positions of white or black squares
-%datasample seem to work only for recent Matlab versions
-q.DotLocation = 0:q.nSpots-1;
-q.DotLocation = q.DotLocation(randperm(length(q.DotLocation)));
+q.DotLocation = datasample(0:q.nSpots-1,q.nSpots,'Replace',false); % draw q.nSpots unique elements in random order, use to set positions of white or black squares
 %0:q.nStimFramesMapping-1 correspond to locations of white dots
 %q.nStimFramesMapping:q.nSpots-1 correspond to locations of black dots
 

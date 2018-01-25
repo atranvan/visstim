@@ -57,7 +57,7 @@ for i = 1:q.repeats * 2
     [~, ~, keyCode] = KbCheck;
     if keyCode(KbName('escape')), error('escape'), end
 end
-catch
+catch err
     if ~strcmp(err.message, 'escape')
         rethrow(err)
     end

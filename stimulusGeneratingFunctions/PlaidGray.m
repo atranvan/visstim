@@ -46,16 +46,11 @@ function stimulusInfo =  PlaidGray(q)
 stimulusInfo = setstimulusinfobasicparams(q);
 stimulusInfo = setstimulusinfostimuli(stimulusInfo, q);
 
-%--------------------------------------------------------------------------
-% This is kind of a workaround to superimpose two sets of gratings
-% blending the default gratings (as generated in Drift) would look like the
-% white bars are summed
 stimulusInfo.experimentStartTime = now;
 tic
 runbaseline(q, stimulusInfo)
 stimulusInfo.actualBaseLineTime = toc;
 Priority(MaxPriority(q.window));                           % Needed to ensure maximum performance
-
 
 %The Display Loop - Displays the grating at predefined orientations from
 %the switch structure
