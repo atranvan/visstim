@@ -21,6 +21,8 @@ p.addParamValue('keyWait', 0)
 
 % Whether or not to clear the screen at the end. Default is yes (1)
 p.addParamValue('screenClear', 1)
+
+Screen('Preference', 'SkipSyncTests', 1);
 %% --------------- Configuration Variables ---------------------------------
 
 
@@ -78,7 +80,7 @@ p.addParamValue('testingMode', 0)
 %
 % 'toBegin' - triggering begins the stimuli, but they then run untriggered
 
-p.addParamValue('triggering','on');% 'toBegin');
+p.addParamValue('triggering','off');% 'toBegin');
 
 
 % photoDiode 'on' will display a patch for photodiode readout. 'off' means
@@ -88,12 +90,12 @@ p.addParamValue('photoDiode', 'on');
 % add a default save path. This is safest. All timestamped stimulus files
 % will be saved here. To save a different directory, pass that directory
 % in. To suppress saving, pass an empty string ('')
-p.addParamValue('filePath', 'C:\Users\ranczLab\Documents\MATLAB\visstim\stimfiles')
+p.addParamValue('filePath', 'C:\Users\ranczLab\Documents\Github\visstim\stimfiles')
 
 % add a status file path. This allows VisStimAlex to output its current
 % status to a text file, for remote monitoring
 
-p.addParamValue('statusFilePath', 'C:\Users\ranczLab\Documents\MATLAB\visstim\stimstatus')
+p.addParamValue('statusFilePath', 'C:\Users\ranczLab\Documents\Github\visstim\stimstatus')
 
 
 % Grating parameters:
@@ -200,6 +202,7 @@ else
 end
 
 %% -------------------Start PTB ------------------------------------------
+Screen('Preference', 'SkipSyncTests', 1);
 try
     if q.testingMode > 1
         Screen('Preference', 'verbosity', 4);
