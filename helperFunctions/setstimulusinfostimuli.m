@@ -77,6 +77,7 @@ switch q.experimentType
                         stimulusInfo.stimuli((repeat -1)*q.lumNum + d).lum = lumOrder(d); % assign the appropriate luminance
                     end
                 end
+        end
                 
     case 'D'
         %Preallocate
