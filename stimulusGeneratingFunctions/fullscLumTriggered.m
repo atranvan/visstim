@@ -1,6 +1,8 @@
-function stimulusInfo = fullscreenPulseTriggered(q)
-% fullscPulse Displays a full screen (gray, luminance input by user)
-% after/before black screen
+function stimulusInfo = fullscLumTriggered(q)
+% fullscPulse Displays a series of full screens (gray, luminance input by user)
+% after black screen
+% for this stimulus we do not use the photodiode corner even if the
+% parameter is on
 %
 % Inputs:
 %
@@ -8,8 +10,8 @@ function stimulusInfo = fullscreenPulseTriggered(q)
 %
 % Ouput:
 %   stimulusInfo
-%       .experimentType         'fsPulse'
-%       .triggering             'on'
+%       .experimentType         'fsLum'
+%       .triggering             'off'
 %       .pulseTime
 %       .baseLineTime           a copy of baseLineTime
 %       .baseLineSFrames        stimulus frames during baseline (calculated)
@@ -20,10 +22,10 @@ function stimulusInfo = fullscreenPulseTriggered(q)
 %       .stimuli                a 1 x m struct array:
 %               m = repeat * 2 - a complete list of states
 %                   .repeat              Which repetition, within the
-%                                           run, this drift was in
+%                                           run, this display was in
 %                   .num           Which number, within a repetition
-%                                           this drift was
-%                   
+%                                           this display was
+%                   .lum           The screen luminance for this display
 %                   .startTime      Relative time, in seconds, since the
 %                                      start of the experiment, that the
 %                                      state started to be shown
@@ -50,16 +52,20 @@ runbaseline(q, stimulusInfo)
 %The Display Loop - Displays the grating at predefined orientations from
 %the switch structure
 try
-
+    currentLumIndex = 0; 
     for repeat = 1:q.repeats
-
+        
+        for d=1:q.lumNum
+            currentLumIndex = currentLumIndex + 1;
+            thisLum = stimulusInfo.stimuli(currentLumIndex).lum;       % the first gray screen
+            
            % stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             for frameCount= 1:round(q.blackscreenTime * q.hz);
    
-                Screen('FillRect', q.window, q.black);
-                if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, q.white,q.photoDiodeRect )
-                end
+                Screen('FillRect', q.window, q.baselineLum);
+%                 if q.photoDiodeRect(2)
+%                     Screen('FillRect', q.window, q.white,q.photoDiodeRect )
+%                 end
                 Screen('Flip',q.window);
                 %stimulusInfo.stimuli(currentStimIndex).endTime = toc;
             end
@@ -69,28 +75,21 @@ try
             
 
             
-            %PostDrift gray screen
+            %gray screen
             %Record absolute and relative start time
             while inputSingleScan(q.input)
-            %for holdFrames = 1:round(q.postDriftGrayTime*q.hz)
-                Screen('FillRect', q.window, q.lumscreen);
+                Screen('FillRect', q.window, thisLum);
                 
-                if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, q.black,q.photoDiodeRect )
-                end
+%                 if q.photoDiodeRect(2)
+%                     Screen('FillRect', q.window, q.black,q.photoDiodeRect )
+%                 end
                 Screen('Flip',q.window);
             end
              %Quit only if 'esc' key was pressed
             [~, ~, keyCode] = KbCheck;
             if keyCode(KbName('escape')), error('escape'), end
-            if keyCode(KbName('t'))
-                %wait for keypress to end (=key up) before breaking
-                while KbCheck
-                end
-                break
-            end
         end
-    
+    end
     catch err
     if ~strcmp(err.message, 'escape')
         rethrow(err)
@@ -98,7 +97,7 @@ try
 
 end
 %Display a black screen at the end
-Screen('FillRect', q.window, q.black);
+Screen('FillRect', q.window, 0);
 Screen('Flip',q.window);
 
 end

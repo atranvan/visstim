@@ -7,6 +7,10 @@ stimulusInfo.YSpanPixels=round(q.YSpanDegrees/q.degperpix);
 
 if (stimulusInfo.XSpanPixels>q.screenRect(3))||(stimulusInfo.YSpanPixels>q.screenRect(4))
     msg='visual space larger than screen dimensions';
+    disp(stimulusInfo.XSpanPixels)
+    disp(q.screenRect(3))
+    disp(stimulusInfo.YSpanPixels)
+    disp(q.screenRect(4))
     error(msg)
 else
     stimulusInfo.XOffset = round((q.screenRect(3)-stimulusInfo.XSpanPixels)/2);
@@ -19,8 +23,10 @@ stimulusInfo.spotSizeDegrees=round(stimulusInfo.spotSizePixels*q.degperpix);
 stimulusInfo.Ncols=round(stimulusInfo.XSpanPixels/stimulusInfo.spotSizePixels);
 stimulusInfo.Nrows=round(stimulusInfo.YSpanPixels/stimulusInfo.spotSizePixels);
 
-q.DotLocation = datasample(0:q.nSpots-1,q.nSpots,'Replace',false); % draw q.nSpots unique elements in random order, use to set positions of white or black squares
-%0:q.nStimFramesMapping-1 correspond to locations of white dots
+%q.DotLocation = datasample(0:q.nSpots-1,q.nSpots,'Replace',false); % draw q.nSpots unique elements in random order, use to set positions of white or black squares
+%datasample seem to work only for recent Matlab versions
+q.DotLocation = 0:q.nSpots-1;
+q.DotLocation = q.DotLocation(randperm(length(q.DotLocation)));%0:q.nStimFramesMapping-1 correspond to locations of white dots
 %q.nStimFramesMapping:q.nSpots-1 correspond to locations of black dots
 
 stimulusInfo.whiteXIndex = zeros (q.nSpots,1); % whiteXIndex is column number between 0:11 if spot is white, -1 otherwise

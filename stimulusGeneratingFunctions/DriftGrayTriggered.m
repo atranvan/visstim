@@ -73,7 +73,7 @@ try
                 % Draw grating texture, rotated by "angle":
                 Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
                 if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 255,q.photoDiodeRect )
+                    Screen('FillRect', q.window, q.white,q.photoDiodeRect )
                 end
                 Screen('Flip',q.window);
                 stimulusInfo.stimuli(currentStimIndex).endTime = toc;
@@ -92,10 +92,10 @@ try
             stimulusInfo.stimuli(currentStimIndex).type = 'PostDriftGray';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             while inputSingleScan(q.input)
-                Screen('FillRect', q.window, 127);
+                Screen('FillRect', q.window, q.grey);
                 
                 if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 0,q.photoDiodeRect )
+                    Screen('FillRect', q.window, q.black,q.photoDiodeRect )
                 end
                 Screen('Flip',q.window);
                 stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
@@ -117,7 +117,7 @@ try
     end
 end
 %Display a black screen at the end
-Screen('FillRect', q.window, 0);
+Screen('FillRect', q.window, q.black);
 Screen('Flip',q.window);
 
 end

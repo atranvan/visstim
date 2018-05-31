@@ -31,8 +31,8 @@ function [masktex, stimulusInfo]=patchgrid(q, stimulusInfo)
          error('subset specification must contain the same number of entries as the number of patches (x*y)')
      end
      if ~isnumeric(q.patchSubset)||(~all((q.patchSubset(:)==1)|(q.patchSubset(:)==0)))
-         error('Please specity subset using only 1s or 0s')
-     end
-     stimulusInfo.nPatches=sum(q.patchSubset(:));
-     masktex=masktex(logical(q.patchSubset));
- end
+        error('Please specity subset using only 1s or 0s')
+    end
+    stimulusInfo.nPatches=sum(q.patchSubset(:));
+    masktex=masktex(logical(q.patchSubset));
+end

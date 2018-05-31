@@ -20,6 +20,9 @@ switch q.experimentType
     case {'D', 'HD', 'HDH', 'DH','P', 'DG','PG','HDHG', 'HDRDHG','HDSRHG','HPHG','SrDG','SpotRet'}
         stimulusInfo.directionsNum = q.directionsNum;
         stimulusInfo.repeats = q.repeats;
+    case 'fsLum'
+        stimulusInfo.repeats = q.repeats;
+        stimulusInfo.lumNum = q.lumNum;
     case'Ret'
         stimulusInfo.nPatches = q.patchGridDimensions(1)*q.patchGridDimensions(2);
         stimulusInfo.patchGridX=q.patchGridX;

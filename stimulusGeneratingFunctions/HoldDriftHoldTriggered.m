@@ -108,7 +108,7 @@ try
             %PostDrift Hold - until terminated by a trigger
             stimulusInfo.stimuli(currentStimIndex).type = 'PostDriftHold';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
-            while ~getvalue(q.input)
+            while inputSingleScan(q.input)
                 Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, 0,q.photoDiodeRect )

@@ -3,7 +3,7 @@
 % and DriftGray stimulus
 % 2017-08-15 ATVM added sparse noise gray stimulus
 % 2017-08-16 ATVM added RFNoiseMapping stimulus and associated helper
-% function generateSparseMappingStimuli
+% function generateSparse§MappingStimuli
 %
 % Adapted from Bruno Pichler's Grating Script
 
@@ -21,8 +21,6 @@ p.addParamValue('keyWait', 0)
 
 % Whether or not to clear the screen at the end. Default is yes (1)
 p.addParamValue('screenClear', 1)
-
-Screen('Preference', 'SkipSyncTests', 1);
 %% --------------- Configuration Variables ---------------------------------
 
 
@@ -59,9 +57,10 @@ Screen('Preference', 'SkipSyncTests', 1);
 % SrDG:     just the central spot
 % SpotRet:  Spot containing drifting gratings on gray background - location
 % is an input (locationX, locationY below are centre of spot)
+% fsLum:    flip between black screen and gray screens of varying luminance
 
 
-p.addParamValue('experimentType', 'D');
+p.addParamValue('experimentType', 'fsLum');
  
 % testing mode:
 %0 turns off testing mode (assumes DAQ toolbox present, running on windows)
@@ -80,33 +79,35 @@ p.addParamValue('testingMode', 0)
 %
 % 'toBegin' - triggering begins the stimuli, but they then run untriggered
 
-p.addParamValue('triggering','off');% 'toBegin');
+p.addParamValue('triggering','on');% 'toBegin');
 
 
 % photoDiode 'on' will display a patch for photodiode readout. 'off' means
 % no patch will be displayed
-p.addParamValue('photoDiode', 'on');
+p.addParamValue('photoDiode', 'off');
 
 % add a default save path. This is safest. All timestamped stimulus files
 % will be saved here. To save a different directory, pass that directory
 % in. To suppress saving, pass an empty string ('')
-p.addParamValue('filePath', 'C:\Users\ranczLab\Documents\Github\visstim\stimfiles')
+p.addParamValue('filePath', 'C:\Users\ranczLab\Documents\MATLAB\visstim\stimfiles')
 
 % add a status file path. This allows VisStimAlex to output its current
 % status to a text file, for remote monitoring
 
-p.addParamValue('statusFilePath', 'C:\Users\ranczLab\Documents\Github\visstim\stimstatus')
+p.addParamValue('statusFilePath', 'C:\Users\ranczLab\Documents\MATLAB\visstim\stimstatus')
 
 
 % Grating parameters:
 p.addParamValue('gratingType', 1);                           % 0 creates sine grating, 1 creates square wave grating
-p.addParamValue('spaceFreqDeg',0.02);                        % spatial frequency in cycles / degree
+p.addParamValue('spaceFreqDeg',0.16);                        % spatial frequency in cycles / degree
 p.addParamValue('tempFreq',1);                               % temporal frequency in Hz
-p.addParamValue('directionsNum',4);                          % Number of different directions to display
+p.addParamValue('directionsNum',8);                          % Number of different directions to display
+p.addParamValue('lumNum',8);                                 % Number of different colors to display
+p.addParamValue('baselineLum',0);                            % interpulse screen luminance for fsLum stimulus (use 0 or 177.5)
 
 %Run parameters
-p.addParamValue('baseLineColor',127);                        % is baseline screen black (set value to 0, this was old version) or gray (127, for 2P)
-p.addParamValue('baseLineTime',0);
+p.addParamValue('baseLineColor',177.5);                      % is baseline screen black (set value to 0, this was old version) or gray (177.5, for 2P)
+p.addParamValue('baseLineTime',2);
 p.addParamValue('repeats', 1);                               % Number of repeats within each run
 p.addParamValue('randMode', 3);                              % Randomisation of stimulus order. (not applicable to Flip)
 %             0 = orderly presentation (not recommended).
@@ -119,11 +120,11 @@ p.addParamValue('preDriftHoldTime', 1);                       % How long to hold
 p.addParamValue('driftTime',2);                               % How long to display a drifting grating for
 p.addParamValue('postDriftHoldTime', 1);                      % How long to hold the grating for, in seconds, after a drift
 p.addParamValue('flipTime', 0.2);                             % How long each state (white or black) should be displayed for in flipStimulus
-p.addParamValue('postDriftGrayTime', 1);                      % How long to display gray screen for, in seconds, after a drift
+p.addParamValue('postDriftGrayTime', 0.5);                    % How long to display gray screen for, in seconds, after a drift
 p.addParamValue('plaidAngle', 90);                            % angle between two components of a plaid
-p.addParamValue('lumscreen', 150);                            % luminance of gray screen for fullscPulse stimulus
-p.addParamValue('blackscreenTime',4);                         % How long to display a black screen for fullscPulse stimulus
-p.addParamValue('pulsescreenTime',1);                         % How long to display a gray screen for fullscPulse stimulus
+p.addParamValue('lumscreen', 255);                            % luminance of gray screen for fullscPulse stimulus
+p.addParamValue('blackscreenTime',4);                         % How long to display a black screen for fullscPulse and fullscLum stimulus
+p.addParamValue('pulsescreenTime',1);                         % How long to display a gray screen for fullscPulse and fullscLum stimulus
 p.addParamValue('reverseDriftTime',0.5);                      % How long to switch grating direction
 p.addParamValue('spotDriftTime',0.5)                          % How long to display a central spot with rotated grating 
 
@@ -202,7 +203,6 @@ else
 end
 
 %% -------------------Start PTB ------------------------------------------
-Screen('Preference', 'SkipSyncTests', 1);
 try
     if q.testingMode > 1
         Screen('Preference', 'verbosity', 4);
@@ -271,16 +271,16 @@ HideCursor;
 
 Priority(MaxPriority(q.window));                           % Needed to ensure maximum performance
 whichScreen = max(Screen('Screens'));
-white = WhiteIndex(whichScreen);
-black = BlackIndex(whichScreen);
-grey = white / 2;
+q.white = WhiteIndex(whichScreen);
+q.black = BlackIndex(whichScreen);
+q.grey = q.white / 2;
 
 
-Screen('FillRect', q.window,grey);                          % Grey Background for initialisation
+Screen('FillRect', q.window,q.grey);                          % Grey Background for initialisation
 Screen('Flip',q.window);
 
 %Generate the grating itself
-g=grey+grey*GratingAlex(q.gratingType,(q.screenRect(1)+1:q.screenRect(3)*q.gratingTextureSize), (q.screenRect(2)+1:q.screenRect(4)*q.gratingTextureSize), 0, q.spaceFreqPixels);
+g=q.grey+q.grey*GratingAlex(q.gratingType,(q.screenRect(1)+1:q.screenRect(3)*q.gratingTextureSize), (q.screenRect(2)+1:q.screenRect(4)*q.gratingTextureSize), 0, q.spaceFreqPixels);
 
 if ndims(g)>2&&size(g, 3)>1
     for ii=1:size(g, 3)
@@ -292,9 +292,9 @@ end
 
 
 %Generate the grating for plaids
-gplaid=grey+grey*GratingAlex(q.gratingType,(q.screenRect(1)+1:q.screenRect(3)*q.gratingTextureSize), (q.screenRect(2)+1:q.screenRect(4)*q.gratingTextureSize), 0, q.spaceFreqPixels);
+gplaid=q.grey+q.grey*GratingAlex(q.gratingType,(q.screenRect(1)+1:q.screenRect(3)*q.gratingTextureSize), (q.screenRect(2)+1:q.screenRect(4)*q.gratingTextureSize), 0, q.spaceFreqPixels);
 
-plaidgrating=ones(length(q.screenRect(2)+1:q.screenRect(4)*q.gratingTextureSize),length(q.screenRect(1)+1:q.screenRect(3)*q.gratingTextureSize), 2) * black;
+plaidgrating=ones(length(q.screenRect(2)+1:q.screenRect(4)*q.gratingTextureSize),length(q.screenRect(1)+1:q.screenRect(3)*q.gratingTextureSize), 2) * q.black;
 
 
 plaidgrating(:, :, 2)= gplaid.* 1;
@@ -406,9 +406,15 @@ try
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
                 case 'fsPulse'
                     stimulusInfo=fullscreenPulse(q);
-                    stimulusInfo.driftTime=q.driftTime;
-                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                    stimulusInfo.blackscreenTime=q.blackscreenTime;
+                    stimulusInfo.pulsescreenTime = q.pulsescreenTime;
                     stimulusInfo.lumscreen=q.lumscreen;
+                case 'fsLum'
+                    stimulusInfo=fullscLum(q);
+                    stimulusInfo.blackscreenTime=q.blackscreenTime;
+                    stimulusInfo.pulsescreenTime = q.pulsescreenTime;
+                    stimulusInfo.lumNum=q.lumNum;
+                    stimulusInfo.baselineLum=q.baselineLum;
                 otherwise
                     error('Unsupported Mode')
             end
@@ -495,9 +501,15 @@ try
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
                 case 'fsPulse'
                     stimulusInfo=fullscreenPulseTriggered(q);
-                    stimulusInfo.driftTime=q.driftTime;
-                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                    stimulusInfo.blackscreenTime=q.blackscreenTime;
+                    stimulusInfo.pulsescreenTime = q.pulsescreenTime;
                     stimulusInfo.lumscreen=q.lumscreen;
+                case 'fsLum'
+                    stimulusInfo=fullscLumTriggered(q);
+                    stimulusInfo.blackscreenTime=q.blackscreenTime;
+                    stimulusInfo.pulsescreenTime = q.pulsescreenTime;
+                    stimulusInfo.lumNum=q.lumNum;
+                    stimulusInfo.baselineLum=q.baselineLum;
                 otherwise
                    error('Unsupported Mode')
             end
@@ -572,9 +584,15 @@ try
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
                 case 'fsPulse'
                     stimulusInfo=fullscreenPulse(q);
-                    stimulusInfo.driftTime=q.driftTime;
-                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                    stimulusInfo.blackscreenTime=q.blackscreenTime;
+                    stimulusInfo.pulsescreenTime = q.pulsescreenTime;
                     stimulusInfo.lumscreen=q.lumscreen;
+                case 'fsLum'
+                    stimulusInfo=fullscLum(q);
+                    stimulusInfo.blackscreenTime=q.blackscreenTime;
+                    stimulusInfo.pulsescreenTime = q.pulsescreenTime;
+                    stimulusInfo.lumNum=q.lumNum;
+                    stimulusInfo.baselineLum=q.baselineLum;
                 case 'Ret'
                     stimulusInfo=RetinotopyDrift(q);
                 case 'SpotRet'
@@ -622,7 +640,7 @@ end
 
 % Unless it's a flip or sparse noise (in which case it's irrelevant), add temporal and
 % spatial frequency to the output variable
-if ~sum((strcmp(q.experimentType, {'Flip', 'spn','spnG','spnMap','fsPulse'})))
+if ~sum((strcmp(q.experimentType, {'Flip', 'spn','spnG','spnMap','fsPulse','fsLum'})))
     stimulusInfo.temporalFreq = q.tempFreq;
     stimulusInfo.spatialFreq = q.spaceFreqDeg;
     
@@ -661,6 +679,6 @@ if q.screenClear
     clear mex
 else
     Screen
-    Screen('FillRect', q.window,127);                         % Grey Background for initialisation
+    Screen('FillRect', q.window,q.grey);                         % Grey Background for initialisation
     Screen('Flip',q.window);
 end

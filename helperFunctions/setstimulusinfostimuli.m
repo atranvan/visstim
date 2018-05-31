@@ -19,6 +19,65 @@ switch q.experimentType
             stimulusInfo.stimuli(i).state = 'black';
             stimulusInfo.stimuli(i+1).state = 'gray';
         end
+    case 'fsLum'    
+        stimulusInfo.stimuli = struct('state', [], 'startTime', [], 'endTime', []);
+        stimulusInfo.stimuli(q.repeats*q.lumNum*2).state =[];
+        switch q.randMode
+            case 0  % Orderly progression of luminance (dark to bright)
+                for repeat = 1:q.repeats
+                    for d=1:q.lumNum
+                        stimulusInfo.stimuli((repeat-1)*q.lumNum + d).repeat = repeat;
+                        stimulusInfo.stimuli((repeat-1)*q.lumNum + d).num = d;
+                        if q.baselineLum == 0
+                            stimulusInfo.stimuli((repeat-1)*q.lumNum + d).lum = d*q.white/q.lumNum; % just dump in the luminance in order, starting from the first one after 0
+                        else
+                            stimulusInfo.stimuli((repeat-1)*q.lumNum + d).lum = (d-1)*q.white/(q.lumNum-1);% just dump in the luminance in order, starting from 0
+                        end
+                    end
+                end
+            case 1  % Assign a pseudorandom order to be used in each repetition
+                order = randperm(q.lumNum);
+                if q.baselineLum == 0
+                    lumOrder = (order) * q.white/q.lumNum;
+                else
+                    lumOrder = (order-1)*q.white/(q.lumNum-1);
+                end
+                for repeat = 1:q.repeats
+                    for d=1:q.lumNum
+                        stimulusInfo.stimuli((repeat-1)*q.lumNum + d).repeat = repeat;
+                        stimulusInfo.stimuli((repeat-1)*q.lumNum + d).num = d;
+                        stimulusInfo.stimuli((repeat-1)*q.lumNum + d).lum = lumOrder(d); % assign the appropriate luminance
+                    end
+                end
+            case 2  % Assign a new pseudorandom order for each repetition
+                for repeat = 1:q.repeats
+                    order = randperm(q.lumNum);
+                    if q.baselineLum == 0
+                        lumOrder = (order) * q.white/q.lumNum;
+                    else
+                        lumOrder = (order-1)*q.white/(q.lumNum-1);
+                    end
+                    for d=1:q.lumNum
+                        stimulusInfo.stimuli((repeat -1)*q.lumNum + d).repeat = repeat;
+                        stimulusInfo.stimuli((repeat -1)*q.lumNum + d).num = d;
+                        stimulusInfo.stimuli((repeat -1)*q.lumNum + d).lum = lumOrder(d); % assign the appropriate luminance
+                    end
+                end
+            case 3  % choose maximally different stimuli
+                order = maximallyDifferentDirections(q.lumNum);
+                if q.baselineLum == 0
+                    lumOrder = (order) * q.white/q.lumNum;
+                else
+                    lumOrder = (order-1)*q.white/(q.lumNum-1);
+                end
+                for repeat = 1:q.repeats
+                    for d=1:q.lumNum
+                        stimulusInfo.stimuli((repeat -1)*q.lumNum + d).repeat = repeat;
+                        stimulusInfo.stimuli((repeat -1)*q.lumNum + d).num = d;
+                        stimulusInfo.stimuli((repeat -1)*q.lumNum + d).lum = lumOrder(d); % assign the appropriate luminance
+                    end
+                end
+                
     case 'D'
         %Preallocate
         stimulusInfo.stimuli = struct('type', [], 'repeat', [], 'num', [], 'direction', [], 'startTime', [], 'endTime', []);

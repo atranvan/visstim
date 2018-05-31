@@ -56,9 +56,9 @@ try
            % stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             for frameCount= 1:round(q.blackscreenTime * q.hz);
    
-                Screen('FillRect', q.window, 0);
+                Screen('FillRect', q.window, q.black);
                 if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 255,q.photoDiodeRect )
+                    Screen('FillRect', q.window, q.white,q.photoDiodeRect )
                 end
                 Screen('Flip',q.window);
                 %stimulusInfo.stimuli(currentStimIndex).endTime = toc;
@@ -69,13 +69,13 @@ try
             
 
             
-            %PostDrift gray screen
+            %gray screen
             %Record absolute and relative start time
             for holdFrames = 1:round(q.pulsescreenTime*q.hz)
                 Screen('FillRect', q.window, q.lumscreen);
                 
                 if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 0,q.photoDiodeRect )
+                    Screen('FillRect', q.window, q.black,q.photoDiodeRect )
                 end
                 Screen('Flip',q.window);
             end
