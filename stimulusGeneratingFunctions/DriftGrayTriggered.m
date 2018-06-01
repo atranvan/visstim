@@ -92,7 +92,7 @@ try
             stimulusInfo.stimuli(currentStimIndex).type = 'PostDriftGray';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             while inputSingleScan(q.input)
-                Screen('FillRect', q.window, q.grey);
+                Screen('FillRect', q.window, 177.5);
                 
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, q.black,q.photoDiodeRect )

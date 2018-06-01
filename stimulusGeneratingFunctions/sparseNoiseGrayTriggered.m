@@ -33,7 +33,7 @@ Screen('Flip', q.window);
 %KbWait();                   %Wait for keypress to start
 WaitSecs(1);
 
-Screen('FillRect', q.window, 127); %fill with grey
+Screen('FillRect', q.window, 177.5); %fill with grey
 Screen('Flip', q.window);
 % tic        %start the timer
 % WaitSecs(q.baseLineTime) %and wait during baseline
@@ -49,13 +49,13 @@ try
         %v=convertSpotStateGreyscale(v)';
         %v=cat(1, v, v, v);
         
-        Screen('FillRect', q.window, 127);
+        Screen('FillRect', q.window, 177.5);
         %Screen('FillOval', q.window,stimulusInfo.spotColors{i}*255,stimulusInfo.stimuliSp{i}')
         Screen('FillRect', q.window,stimulusInfo.spotColors{i}*255,stimulusInfo.stimuliSp{i}')
         Screen('Flip', q.window);
         stimulusInfo.stimuli(i).startTime=toc;
         for delay=2:round(q.spotTime/q.ifi)         %Wait the requested time by calculating the correct
-            Screen('FillRect', q.window, 127);      %number of screen flips, and executing them.
+            Screen('FillRect', q.window, 177.5);      %number of screen flips, and executing them.
             Screen('FillOval', q.window, stimulusInfo.spotColors{i}*255,stimulusInfo.stimuliSp{i}')
             %Screen('FillRect', q.window, stimulusInfo.spotColors{i}*255,stimulusInfo.stimuliSp{i}')
             if q.photoDiodeRect(2)
@@ -65,7 +65,7 @@ try
         end
         
         while inputSingleScan(q.input)
-            Screen('FillRect', q.window, 127);
+            Screen('FillRect', q.window, 177.5);
             if q.photoDiodeRect(2)
                 Screen('FillRect', q.window, 0,q.photoDiodeRect )
             end

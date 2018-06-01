@@ -162,7 +162,7 @@ try
             stimulusInfo.stimuli(currentStimIndex).type = 'PostHoldGray';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             for holdFrames = 1:round(q.postDriftGrayTime*q.hz)
-                Screen('FillRect', q.window, 127);
+                Screen('FillRect', q.window, 177.5);
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, 0,q.photoDiodeRect )% photodiode is black for post-hold gray screen
                 end

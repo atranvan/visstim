@@ -58,13 +58,8 @@ visiblesize=(2*texsize+1)/2;
 whichScreen = max(Screen('Screens'));
 white = WhiteIndex(whichScreen);
 black = BlackIndex(whichScreen);
-grey = round((white+black) / 2);
-% This makes sure that on floating point framebuffers we still get a
-% well defined gray. It isn't strictly neccessary in this demo:
-if grey == white
-    grey=white / 2;
-end
-inc=white-grey;
+grey = 177.5;
+
 %The Display Loop - Displays the grating at predefined orientations from
 %the switch structure
 try
@@ -81,7 +76,7 @@ try
             srcRect=[0 0 q.screenRect(3)*2 q.screenRect(4)*2];
 
             for holdFrames = 1:round(q.preDriftHoldTime*q.hz)
-                Screen('FillRect', q.window, 127);
+                Screen('FillRect', q.window, 177.5);
 
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, 255,q.photoDiodeRect ) % photodiode is white for pre-hold grating
@@ -106,7 +101,7 @@ try
                 srcRect=[xoffset 0 (xoffset + q.screenRect(3)*2) q.screenRect(4)*2];
                 
                 % Draw grating texture, rotated by "angle":
-                Screen('FillRect', q.window, 127);
+                Screen('FillRect', q.window, 177.5);
                 %Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, 0,q.photoDiodeRect )
@@ -156,7 +151,7 @@ try
                      Screen('Blendfunction', q.window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                      % Draw photodiode area in one corner of the screen
                      if q.photoDiodeRect(2)
-                         Screen('FillRect', q.window, 127,q.photoDiodeRect ) % photodiode black for drifting grating
+                         Screen('FillRect', q.window, 255,q.photoDiodeRect ) % photodiode white for drifting grating
                      end
                 end
 

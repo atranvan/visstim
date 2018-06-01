@@ -60,7 +60,7 @@ p.addParamValue('screenClear', 1)
 % fsLum:    flip between black screen and gray screens of varying luminance
 
 
-p.addParamValue('experimentType', 'fsLum');
+p.addParamValue('experimentType', 'PG');
  
 % testing mode:
 %0 turns off testing mode (assumes DAQ toolbox present, running on windows)
@@ -79,7 +79,7 @@ p.addParamValue('testingMode', 0)
 %
 % 'toBegin' - triggering begins the stimuli, but they then run untriggered
 
-p.addParamValue('triggering','on');% 'toBegin');
+p.addParamValue('triggering','off');% 'toBegin');
 
 
 % photoDiode 'on' will display a patch for photodiode readout. 'off' means
@@ -117,10 +117,10 @@ p.addParamValue('randMode', 3);                              % Randomisation of 
 
 % Experiment type specific parameters
 p.addParamValue('preDriftHoldTime', 1);                       % How long to hold the grating for, in seconds, before a drift
-p.addParamValue('driftTime',2);                               % How long to display a drifting grating for
+p.addParamValue('driftTime',4);                               % How long to display a drifting grating for
 p.addParamValue('postDriftHoldTime', 1);                      % How long to hold the grating for, in seconds, after a drift
 p.addParamValue('flipTime', 0.2);                             % How long each state (white or black) should be displayed for in flipStimulus
-p.addParamValue('postDriftGrayTime', 0.5);                    % How long to display gray screen for, in seconds, after a drift
+p.addParamValue('postDriftGrayTime', 1);                    % How long to display gray screen for, in seconds, after a drift
 p.addParamValue('plaidAngle', 90);                            % angle between two components of a plaid
 p.addParamValue('lumscreen', 255);                            % luminance of gray screen for fullscPulse stimulus
 p.addParamValue('blackscreenTime',4);                         % How long to display a black screen for fullscPulse and fullscLum stimulus

@@ -98,7 +98,7 @@ try
             stimulusInfo.stimuli(currentStimIndex).type = 'PostDriftGray';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             for holdFrames = 1:round(q.postDriftGrayTime*q.hz)
-                Screen('FillRect', q.window, 127);
+                Screen('FillRect', q.window, 120);
                 
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, 0,q.photoDiodeRect )

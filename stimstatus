@@ -1,7 +1,7 @@
 MATLAB initialised. Beginning PTB initialisation...Success!
-Beginning triggered fsLum experiment.
+Beginning  PG experiment.
 All preparations complete. Ready to begin
-Running baseline...
-Ready for trigger to begin stimulus...Receieved
-Beginning stimulus...Terminated early.
-Partial stimulus info saved to C:\Users\ranczLab\Documents\MATLAB\visstim\stimfiles\20180531_22_58_07_fsLum
+Running baseline...Complete.
+Beginning stimulus...
+Complete.
+Stimulus info saved to C:\Users\ranczLab\Documents\MATLAB\visstim\stimfiles\20180531_23_24_55_PG
