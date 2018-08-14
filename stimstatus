@@ -1,7 +1,7 @@
 MATLAB initialised. Beginning PTB initialisation...Success!
-Beginning  SpotRet experiment.
+Beginning triggered SpotRetBlack experiment.
 All preparations complete. Ready to begin
-Running baseline...Complete.
-Beginning stimulus...
-Complete.
-Stimulus info saved to C:\Users\ranczLab\Documents\MATLAB\visstim\stimfiles\20180814_17_46_29_SpotRet
+Running baseline...
+Ready for trigger to begin stimulus...Receieved
+Beginning stimulus...Complete.
+Stimulus info saved to C:\Users\ranczLab\Documents\MATLAB\visstim\stimfiles\20180814_19_16_47_SpotRetBlack

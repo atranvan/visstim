@@ -1,6 +1,6 @@
-function  stimulusInfo = SpotRetTriggered(q)
+function  stimulusInfo = SpotRetBlackTriggered(q)
 % VariableSpotRet  This function displays a spot with a
-% rotated drifting grating on a gray background
+% rotated drifting grating on a black background
 % The position of the spot on the screen is an input variable 
 % Inputs:
 %
@@ -8,7 +8,7 @@ function  stimulusInfo = SpotRetTriggered(q)
 %
 % Ouput:
 %   stimulusInfo
-%       .experimentType         'SpotRet'
+%       .experimentType         'SpotRetBlack'
 %       .triggering             'on'
 %       .baseLineTime           a copy of baseLineTime
 %       .baseLineSFrames        stimulus frames during baseline (calculated)
@@ -72,9 +72,9 @@ try
             stimulusInfo.stimuli(currentStimIndex).type = 'Drift';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             thisDirection = stimulusInfo.stimuli(currentStimIndex).direction + 90;
-            frameCount=0;
+            %frameCount=0;
             for frameCount = 1:round((q.driftTime) * q.hz);
-                frameCount = frameCount + 1;
+                %frameCount = frameCount + 1;
                 % Define shifted srcRect that cuts out the properly shifted rectangular
                 % area from the texture:
                 xoffset = mod(frameCount*DG_ShiftPerFrame,DG_SpatialPeriod);
@@ -102,7 +102,7 @@ try
                 %Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
                 
                 % Draw aperture over grating
-                Screen('DrawTexture', q.window, masktex, [100 100 visiblesize visiblesize], dstCircleRect, thisDirection);
+                Screen('DrawTexture', q.window, masktex, [150 150 visiblesize visiblesize], dstCircleRect, thisDirection);
                 %Screen('DrawTexture', q.window, masktex, dstCircleRect, dstCircleRect, thisDirection);
                 
                 % Disable alpha blending, restrict following drawing to
@@ -134,11 +134,11 @@ try
                 end
 
 
-%                 Screen('Flip',q.window);
-%                 stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
-%                 %Quit only if 'esc' key was pressed
-%                 [~, ~, keyCode] = KbCheck;
-%                 if keyCode(KbName('escape')), error('escape'), end
+                Screen('Flip',q.window);
+                stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
+                %Quit only if 'esc' key was pressed
+                [~, ~, keyCode] = KbCheck;
+                if keyCode(KbName('escape')), error('escape'), end
 
             end
             
@@ -147,7 +147,7 @@ try
             
 
         end
-        while inputSingleScan(q.input) 
+        while ~inputSingleScan(q.input) 
             Screen('FillRect', q.window, black);
             
             if q.photoDiodeRect(2)

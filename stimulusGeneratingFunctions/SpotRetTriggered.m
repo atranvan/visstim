@@ -134,11 +134,11 @@ try
                 end
 
 
-%                 Screen('Flip',q.window);
-%                 stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
-%                 %Quit only if 'esc' key was pressed
-%                 [~, ~, keyCode] = KbCheck;
-%                 if keyCode(KbName('escape')), error('escape'), end
+                Screen('Flip',q.window);
+                stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
+                %Quit only if 'esc' key was pressed
+                [~, ~, keyCode] = KbCheck;
+                if keyCode(KbName('escape')), error('escape'), end
 
             end
             

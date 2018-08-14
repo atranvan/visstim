@@ -62,7 +62,7 @@ p.addParamValue('screenClear', 1)
 % is an input (locationX, locationY below are centre of spot)
 
 
-p.addParamValue('experimentType', 'SpotRet');
+p.addParamValue('experimentType', 'SpotRetBlack');
  
 % testing mode:
 %0 turns off testing mode (assumes DAQ toolbox present, running on windows)
@@ -81,7 +81,7 @@ p.addParamValue('testingMode', 0)
 %
 % 'toBegin' - triggering begins the stimuli, but they then run untriggered
 
-p.addParamValue('triggering','off');% 'toBegin');
+p.addParamValue('triggering','on');% 'toBegin');
 
 
 % photoDiode 'on' will display a patch for photodiode readout. 'off' means
@@ -101,8 +101,8 @@ p.addParamValue('statusFilePath', 'C:\Users\ranczLab\Documents\MATLAB\visstim\st
 
 % Grating parameters:
 p.addParamValue('gratingType', 1);                           % 0 creates sine grating, 1 creates square wave grating
-p.addParamValue('spaceFreqDeg',0.02);                        % spatial frequency in cycles / degree
-p.addParamValue('tempFreq',4);                               % temporal frequency in Hz
+p.addParamValue('spaceFreqDeg',0.16);                        % spatial frequency in cycles / degree
+p.addParamValue('tempFreq',1);                               % temporal frequency in Hz
 p.addParamValue('directionsNum',8);                          % Number of different directions to display
 p.addParamValue('lumNum',8);                                 % Number of different colors to display
 p.addParamValue('baselineLum',177.5);                        % interpulse screen luminance for fsLum stimulus (use 0 or 177.5)
@@ -154,9 +154,9 @@ p.addParamValue('patchGridY', 3);
 p.addParamValue('postPatchPause', 1)                            % How long, in seconds, to leave after a patch. Has no effect on stimulus generation but is used by 2p triggering (Alex)
 p.addParamValue('patchSubset', [1 1 1;1 1 1;1 1 1])
 % Parameters for spot retinotopy
-p.addParamValue('locationX',800);                               % coordinates of the spot center
+p.addParamValue('locationX',1500);                               % coordinates of the spot center
 p.addParamValue('locationY',300);
-p.addParamValue('diameterDeg',30);                              % diameter of the spot, in degrees of visual angle
+p.addParamValue('diameterDeg',50);                              % diameter of the spot, in degrees of visual angle
 % Sparse Noise parameters
 p.addParamValue('spotSizeMean', 4.65);
 p.addParamValue('spotSizeRange', 3.35);

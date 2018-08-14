@@ -1,6 +1,6 @@
 function  stimulusInfo = SpotRetBlack(q)
 % VariableSpotRet  This function displays a spot with a
-% rotated drifting grating on a gray background, followed by a gray screen
+% rotated drifting grating on a black background, followed by a black screen
 % The position of the spot on the screen is an input variable 
 % Inputs:
 %
@@ -8,7 +8,7 @@ function  stimulusInfo = SpotRetBlack(q)
 %
 % Ouput:
 %   stimulusInfo
-%       .experimentType         'SpotRet'
+%       .experimentType         'SpotRetBlack'
 %       .triggering             'off'
 %       .baseLineTime           a copy of baseLineTime
 %       .baseLineSFrames        stimulus frames during baseline (calculated)
