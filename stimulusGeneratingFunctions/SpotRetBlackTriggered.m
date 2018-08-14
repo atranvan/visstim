@@ -81,7 +81,7 @@ try
                 srcRect=[xoffset 0 (xoffset + q.screenRect(3)*2) q.screenRect(4)*2];
                 
                 % Draw grating texture, rotated by "angle":
-                Screen('FillRect', q.window, 177.5);
+                Screen('FillRect', q.window, black);
                 %Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, 0,q.photoDiodeRect )
@@ -148,7 +148,7 @@ try
 
         end
         while inputSingleScan(q.input) 
-            Screen('FillRect', q.window, 177.5);
+            Screen('FillRect', q.window, black);
             
             if q.photoDiodeRect(2)
                 Screen('FillRect', q.window, 0,q.photoDiodeRect )

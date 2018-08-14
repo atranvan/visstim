@@ -1,6 +1,6 @@
-function  stimulusInfo = SpotRetTriggered(q)
+function  stimulusInfo = SpotRetBlack(q)
 % VariableSpotRet  This function displays a spot with a
-% rotated drifting grating on a gray background
+% rotated drifting grating on a gray background, followed by a gray screen
 % The position of the spot on the screen is an input variable 
 % Inputs:
 %
@@ -9,7 +9,7 @@ function  stimulusInfo = SpotRetTriggered(q)
 % Ouput:
 %   stimulusInfo
 %       .experimentType         'SpotRet'
-%       .triggering             'on'
+%       .triggering             'off'
 %       .baseLineTime           a copy of baseLineTime
 %       .baseLineSFrames        stimulus frames during baseline (calculated)
 %       .directionsNum          Number of different directions displayed
@@ -39,7 +39,7 @@ function  stimulusInfo = SpotRetTriggered(q)
 %       .spatialFreq            the grating spatial frequency
 % (it's just easier that way. Think of them as outputs.)
 %---------------------------Initialisation--------------------------------
-q.input = initialisedio(q);
+
 [DG_SpatialPeriod, DG_ShiftPerFrame] = getDGparams(q);
 Screen('Preference', 'SkipSyncTests', 0)
 %Initialise the output variable
@@ -58,6 +58,7 @@ whichScreen = max(Screen('Screens'));
 white = WhiteIndex(whichScreen);
 black = BlackIndex(whichScreen);
 grey = 177.5;
+
 %The Display Loop - Displays the grating at predefined orientations from
 %the switch structure
 try
@@ -72,16 +73,14 @@ try
             stimulusInfo.stimuli(currentStimIndex).type = 'Drift';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             thisDirection = stimulusInfo.stimuli(currentStimIndex).direction + 90;
-            frameCount=0;
             for frameCount = 1:round((q.driftTime) * q.hz);
-                frameCount = frameCount + 1;
                 % Define shifted srcRect that cuts out the properly shifted rectangular
                 % area from the texture:
                 xoffset = mod(frameCount*DG_ShiftPerFrame,DG_SpatialPeriod);
                 srcRect=[xoffset 0 (xoffset + q.screenRect(3)*2) q.screenRect(4)*2];
                 
                 % Draw grating texture, rotated by "angle":
-                Screen('FillRect', q.window, 177.5);
+                Screen('FillRect', q.window, black);
                 %Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, 0,q.photoDiodeRect )
@@ -134,12 +133,11 @@ try
                 end
 
 
-%                 Screen('Flip',q.window);
-%                 stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
-%                 %Quit only if 'esc' key was pressed
-%                 [~, ~, keyCode] = KbCheck;
-%                 if keyCode(KbName('escape')), error('escape'), end
-
+                Screen('Flip',q.window);
+                stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
+                %Quit only if 'esc' key was pressed
+                [~, ~, keyCode] = KbCheck;
+                if keyCode(KbName('escape')), error('escape'), end
             end
             
             currentStimIndex = currentStimIndex + 1;
@@ -147,8 +145,8 @@ try
             
 
         end
-        while inputSingleScan(q.input) 
-            Screen('FillRect', q.window, 177.5);
+        for holdFrames = 1:round(q.postDriftGrayTime*q.hz)
+            Screen('FillRect', q.window, black);
             
             if q.photoDiodeRect(2)
                 Screen('FillRect', q.window, 0,q.photoDiodeRect )
@@ -156,14 +154,7 @@ try
             Screen('Flip',q.window);
             stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken
         end
-        
-            %Quit if 'esc' key was pressed; advance if 't' key pressed
-            [~, ~, keyCode] = KbCheck;
-            if keyCode(KbName('escape')), error('escape')
-            elseif keyCode(KbName('t')), break
-            end
-        end
-    
+    end
 catch err
     if ~strcmp(err.message, 'escape')
         rethrow(err)

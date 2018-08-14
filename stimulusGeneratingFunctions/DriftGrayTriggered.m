@@ -50,7 +50,7 @@ tic
 runbaseline(q, stimulusInfo);
 stimulusInfo.actualBaseLineTime = toc;
 
-
+grey=177.5;
 %The Display Loop - Displays the grating at predefined orientations from
 %the switch structure
 try
@@ -92,7 +92,7 @@ try
             stimulusInfo.stimuli(currentStimIndex).type = 'PostDriftGray';
             stimulusInfo.stimuli(currentStimIndex).startTime = toc;
             while inputSingleScan(q.input)
-                Screen('FillRect', q.window, 177.5);
+                Screen('FillRect', q.window, grey);
                 
                 if q.photoDiodeRect(2)
                     Screen('FillRect', q.window, q.black,q.photoDiodeRect )

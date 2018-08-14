@@ -58,9 +58,11 @@ p.addParamValue('screenClear', 1)
 % SpotRet:  Spot containing drifting gratings on gray background - location
 % is an input (locationX, locationY below are centre of spot)
 % fsLum:    flip between black screen and gray screens of varying luminance
+% SpotRetBlack:  Spot containing drifting gratings on black background - location
+% is an input (locationX, locationY below are centre of spot)
 
 
-p.addParamValue('experimentType', 'PG');
+p.addParamValue('experimentType', 'SpotRet');
  
 % testing mode:
 %0 turns off testing mode (assumes DAQ toolbox present, running on windows)
@@ -84,7 +86,7 @@ p.addParamValue('triggering','off');% 'toBegin');
 
 % photoDiode 'on' will display a patch for photodiode readout. 'off' means
 % no patch will be displayed
-p.addParamValue('photoDiode', 'off');
+p.addParamValue('photoDiode', 'on');
 
 % add a default save path. This is safest. All timestamped stimulus files
 % will be saved here. To save a different directory, pass that directory
@@ -99,11 +101,11 @@ p.addParamValue('statusFilePath', 'C:\Users\ranczLab\Documents\MATLAB\visstim\st
 
 % Grating parameters:
 p.addParamValue('gratingType', 1);                           % 0 creates sine grating, 1 creates square wave grating
-p.addParamValue('spaceFreqDeg',0.16);                        % spatial frequency in cycles / degree
-p.addParamValue('tempFreq',1);                               % temporal frequency in Hz
+p.addParamValue('spaceFreqDeg',0.02);                        % spatial frequency in cycles / degree
+p.addParamValue('tempFreq',4);                               % temporal frequency in Hz
 p.addParamValue('directionsNum',8);                          % Number of different directions to display
 p.addParamValue('lumNum',8);                                 % Number of different colors to display
-p.addParamValue('baselineLum',0);                            % interpulse screen luminance for fsLum stimulus (use 0 or 177.5)
+p.addParamValue('baselineLum',177.5);                        % interpulse screen luminance for fsLum stimulus (use 0 or 177.5)
 
 %Run parameters
 p.addParamValue('baseLineColor',177.5);                      % is baseline screen black (set value to 0, this was old version) or gray (177.5, for 2P)
@@ -117,14 +119,14 @@ p.addParamValue('randMode', 3);                              % Randomisation of 
 
 % Experiment type specific parameters
 p.addParamValue('preDriftHoldTime', 1);                       % How long to hold the grating for, in seconds, before a drift
-p.addParamValue('driftTime',4);                               % How long to display a drifting grating for
+p.addParamValue('driftTime',0.5);                               % How long to display a drifting grating for
 p.addParamValue('postDriftHoldTime', 1);                      % How long to hold the grating for, in seconds, after a drift
 p.addParamValue('flipTime', 0.2);                             % How long each state (white or black) should be displayed for in flipStimulus
-p.addParamValue('postDriftGrayTime', 1);                    % How long to display gray screen for, in seconds, after a drift
+p.addParamValue('postDriftGrayTime', 4);                    % How long to display gray screen for, in seconds, after a drift
 p.addParamValue('plaidAngle', 90);                            % angle between two components of a plaid
 p.addParamValue('lumscreen', 255);                            % luminance of gray screen for fullscPulse stimulus
 p.addParamValue('blackscreenTime',4);                         % How long to display a black screen for fullscPulse and fullscLum stimulus
-p.addParamValue('pulsescreenTime',1);                         % How long to display a gray screen for fullscPulse and fullscLum stimulus
+p.addParamValue('pulsescreenTime',4);                         % How long to display a gray screen for fullscPulse and fullscLum stimulus
 p.addParamValue('reverseDriftTime',0.5);                      % How long to switch grating direction
 p.addParamValue('spotDriftTime',0.5)                          % How long to display a central spot with rotated grating 
 
@@ -152,9 +154,9 @@ p.addParamValue('patchGridY', 3);
 p.addParamValue('postPatchPause', 1)                            % How long, in seconds, to leave after a patch. Has no effect on stimulus generation but is used by 2p triggering (Alex)
 p.addParamValue('patchSubset', [1 1 1;1 1 1;1 1 1])
 % Parameters for spot retinotopy
-p.addParamValue('locationX',300);                               % coordinates of the spot center
+p.addParamValue('locationX',800);                               % coordinates of the spot center
 p.addParamValue('locationY',300);
-p.addParamValue('diameterDeg',40);                              % diameter of the spot, in degrees of visual angle
+p.addParamValue('diameterDeg',30);                              % diameter of the spot, in degrees of visual angle
 % Sparse Noise parameters
 p.addParamValue('spotSizeMean', 4.65);
 p.addParamValue('spotSizeRange', 3.35);
@@ -385,6 +387,13 @@ try
                     stimulusInfo.locationY = q.locationY;
                     stimulusInfo.diameterDeg = q.diameterDeg;
                     stimulusInfo.diameterPix = q.diameterPix;
+                case 'SpotRetBlack'
+                    stimulusInfo=SpotRetBlack(q);
+                    stimulusInfo.driftTime = q.driftTime;
+                    stimulusInfo.locationX = q.locationX;
+                    stimulusInfo.locationY = q.locationY;
+                    stimulusInfo.diameterDeg = q.diameterDeg;
+                    stimulusInfo.diameterPix = q.diameterPix;
                 case 'spn'
                     stimulusInfo=sparseNoise(q);
                 case 'spnG'
@@ -481,6 +490,13 @@ try
                     stimulusInfo=RetinotopyDriftTriggered(q);
                 case 'SpotRet'
                     stimulusInfo=SpotRetTriggered(q);
+                    stimulusInfo.driftTime = q.driftTime;
+                    stimulusInfo.locationX = q.locationX;
+                    stimulusInfo.locationY = q.locationY;
+                    stimulusInfo.diameterDeg = q.diameterDeg;
+                    stimulusInfo.diameterPix = q.diameterPix;
+                case 'SpotRetBlack'
+                    stimulusInfo=SpotRetBlackTriggered(q);
                     stimulusInfo.driftTime = q.driftTime;
                     stimulusInfo.locationX = q.locationX;
                     stimulusInfo.locationY = q.locationY;
@@ -597,6 +613,13 @@ try
                     stimulusInfo=RetinotopyDrift(q);
                 case 'SpotRet'
                     stimulusInfo=SpotRet(q);
+                    stimulusInfo.driftTime = q.driftTime;
+                    stimulusInfo.locationX = q.locationX;
+                    stimulusInfo.locationY = q.locationY;
+                    stimulusInfo.diameterDeg = q.diameterDeg;
+                    stimulusInfo.diameterPix = q.diameterPix;
+                case 'SpotRetBlack'
+                    stimulusInfo=SpotRetBlack(q);
                     stimulusInfo.driftTime = q.driftTime;
                     stimulusInfo.locationX = q.locationX;
                     stimulusInfo.locationY = q.locationY;
