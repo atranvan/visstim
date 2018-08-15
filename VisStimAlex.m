@@ -81,7 +81,7 @@ p.addParamValue('testingMode', 0)
 %
 % 'toBegin' - triggering begins the stimuli, but they then run untriggered
 
-p.addParamValue('triggering','off');% 'toBegin');
+p.addParamValue('triggering','on');% 'toBegin');
 
 
 % photoDiode 'on' will display a patch for photodiode readout. 'off' means

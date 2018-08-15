@@ -147,7 +147,7 @@ try
             
 
         end
-        while ~inputSingleScan(q.input) 
+        while inputSingleScan(q.input) 
             Screen('FillRect', q.window, black);
             
             if q.photoDiodeRect(2)
