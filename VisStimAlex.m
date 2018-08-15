@@ -60,9 +60,11 @@ p.addParamValue('screenClear', 1)
 % fsLum:    flip between black screen and gray screens of varying luminance
 % SpotRetBlack:  Spot containing drifting gratings on black background - location
 % is an input (locationX, locationY below are centre of spot)
+% SpotHDHGBlackLM
+% SpotHDHGBlack
 
 
-p.addParamValue('experimentType', 'SpotHDHGBlack');
+p.addParamValue('experimentType', 'SpotHDHGBlackLM');
  
 % testing mode:
 %0 turns off testing mode (assumes DAQ toolbox present, running on windows)
@@ -154,7 +156,7 @@ p.addParamValue('patchGridY', 3);
 p.addParamValue('postPatchPause', 1)                            % How long, in seconds, to leave after a patch. Has no effect on stimulus generation but is used by 2p triggering (Alex)
 p.addParamValue('patchSubset', [1 1 1;1 1 1;1 1 1])
 % Parameters for spot retinotopy
-p.addParamValue('locationX',1500);                               % coordinates of the spot center
+p.addParamValue('locationX',1200);                               % coordinates of the spot center
 p.addParamValue('locationY',300);
 p.addParamValue('diameterDeg',50);                              % diameter of the spot, in degrees of visual angle
 % Sparse Noise parameters
@@ -406,6 +408,16 @@ try
                     stimulusInfo.preDriftHoldTime = q.preDriftHoldTime;
                     stimulusInfo.postDriftHoldTime = q.postDriftHoldTime;
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                case 'SpotHDHGBlackLM'
+                    stimulusInfo=SpotHDHGBlackLM(q);
+                    stimulusInfo.driftTime = q.driftTime;
+                    stimulusInfo.locationX = q.locationX;
+                    stimulusInfo.locationY = q.locationY;
+                    stimulusInfo.diameterDeg = q.diameterDeg;
+                    stimulusInfo.diameterPix = q.diameterPix;
+                    stimulusInfo.preDriftHoldTime = q.preDriftHoldTime;
+                    stimulusInfo.postDriftHoldTime = q.postDriftHoldTime;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;                    
                 case 'spn'
                     stimulusInfo=sparseNoise(q);
                 case 'spnG'
@@ -526,6 +538,16 @@ try
                     stimulusInfo.preDriftHoldTime = q.preDriftHoldTime;
                     stimulusInfo.postDriftHoldTime = q.postDriftHoldTime;
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                case 'SpotHDHGBlackLM'
+                    stimulusInfo=SpotHDHGBlackLMTriggered(q);
+                    stimulusInfo.driftTime = q.driftTime;
+                    stimulusInfo.locationX = q.locationX;
+                    stimulusInfo.locationY = q.locationY;
+                    stimulusInfo.diameterDeg = q.diameterDeg;
+                    stimulusInfo.diameterPix = q.diameterPix;
+                    stimulusInfo.preDriftHoldTime = q.preDriftHoldTime;
+                    stimulusInfo.postDriftHoldTime = q.postDriftHoldTime;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;  
                 case 'spnG'
                     stimulusInfo=sparseNoiseGrayTriggered(q);
                 case 'spnMap'
@@ -661,6 +683,16 @@ try
                     stimulusInfo.preDriftHoldTime = q.preDriftHoldTime;
                     stimulusInfo.postDriftHoldTime = q.postDriftHoldTime;
                     stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;
+                case 'SpotHDHGBlackLM'
+                    stimulusInfo=SpotHDHGBlackLM(q);
+                    stimulusInfo.driftTime = q.driftTime;
+                    stimulusInfo.locationX = q.locationX;
+                    stimulusInfo.locationY = q.locationY;
+                    stimulusInfo.diameterDeg = q.diameterDeg;
+                    stimulusInfo.diameterPix = q.diameterPix;
+                    stimulusInfo.preDriftHoldTime = q.preDriftHoldTime;
+                    stimulusInfo.postDriftHoldTime = q.postDriftHoldTime;
+                    stimulusInfo.postDriftGrayTime = q.postDriftGrayTime;  
                 case 'spn'
                     stimulusInfo=sparseNoise(q);
                 case 'spnG'

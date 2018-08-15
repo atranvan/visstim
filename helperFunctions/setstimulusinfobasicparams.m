@@ -17,7 +17,7 @@ end
 switch q.experimentType
     case {'Flip','fsPulse'}
         stimulusInfo.repeats=q.repeats;
-    case {'D', 'HD', 'HDH', 'DH','P', 'DG','PG','HDHG', 'HDRDHG','HDSRHG','HPHG','SrDG','SpotRet','SpotRetBlack','SpotHDHGBlack'}
+    case {'D', 'HD', 'HDH', 'DH','P', 'DG','PG','HDHG', 'HDRDHG','HDSRHG','HPHG','SrDG','SpotRet','SpotRetBlack','SpotHDHGBlack','SpotHDHGBlackLM'}
         stimulusInfo.directionsNum = q.directionsNum;
         stimulusInfo.repeats = q.repeats;
     case 'fsLum'
