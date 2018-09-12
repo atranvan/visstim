@@ -42,7 +42,7 @@ function  stimulusInfo = SpotHDHGBlackTriggered(q)
 %---------------------------Initialisation--------------------------------
 q.input = initialisedio(q);
 [DG_SpatialPeriod, DG_ShiftPerFrame] = getDGparams(q);
-Screen('Preference', 'SkipSyncTests', 0)
+Screen('Preference', 'SkipSyncTests', 0);
 %Initialise the output variable
 stimulusInfo = setstimulusinfobasicparams(q);
 stimulusInfo = setstimulusinfostimuli(stimulusInfo, q);
@@ -51,13 +51,13 @@ stimulusInfo = setstimulusinfostimuli(stimulusInfo, q);
 % Let's get going...
 stimulusInfo.experimentStartTime = now;
 tic
-runbaseline(q, stimulusInfo)
+runbaseline(q, stimulusInfo);
 stimulusInfo.actualBaseLineTime = toc;
 texsize=round(q.diameterPix/2); % Half-Size of the grating image.
 visiblesize=(2*texsize+1)/2;
-whichScreen = max(Screen('Screens'));
-white = WhiteIndex(whichScreen);
-black = BlackIndex(whichScreen);
+%whichScreen = max(Screen('Screens'));
+white = 255;%WhiteIndex(whichScreen);
+black = 0;  % BlackIndex(whichScreen);
 grey = 177.5;
 
 %The Display Loop - Displays the grating at predefined orientations from
@@ -82,9 +82,6 @@ try
                 % Draw grating texture, rotated by "angle":
                 Screen('FillRect', q.window, black);
                 %Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
-                if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 0,q.photoDiodeRect )
-                end
                 
                 q.gratingcirc=q.gratingtex;
                 
@@ -129,7 +126,7 @@ try
                 Screen('Blendfunction', q.window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 % Draw photodiode area in one corner of the screen
                 if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 0,q.photoDiodeRect ) % photodiode black for static grating
+                    Screen('FillRect', q.window, 255,q.photoDiodeRect ); % photodiode white for static grating
                 end
                 Screen('Flip',q.window)
             end
@@ -144,10 +141,7 @@ try
                 % Draw grating texture, rotated by "angle":
                 Screen('FillRect', q.window, black);
                 %Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
-                if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 0,q.photoDiodeRect )
-                end
-                
+
                 q.gratingcirc=q.gratingtex;
                 
                 mask=ones(2*texsize+1,2*texsize+1,2)*grey;
@@ -191,7 +185,7 @@ try
                 Screen('Blendfunction', q.window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 % Draw photodiode area in one corner of the screen
                 if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 255,q.photoDiodeRect ) % photodiode white for drifting grating
+                    Screen('FillRect', q.window, 100,q.photoDiodeRect); % photodiode gray for drifting grating
                 end
 
 
@@ -208,9 +202,7 @@ try
             % Draw grating texture, rotated by "angle":
                 Screen('FillRect', q.window, black);
                 %Screen('DrawTexture', q.window, q.gratingtex, srcRect, [], thisDirection);
-                if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 0,q.photoDiodeRect )
-                end
+
                 
                 q.gratingcirc=q.gratingtex;
                 
@@ -255,7 +247,7 @@ try
                 Screen('Blendfunction', q.window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 % Draw photodiode area in one corner of the screen
                 if q.photoDiodeRect(2)
-                    Screen('FillRect', q.window, 0,q.photoDiodeRect ) % photodiode black for static grating
+                    Screen('FillRect', q.window, 255,q.photoDiodeRect ); % photodiode white for static grating
                 end
                 Screen('Flip',q.window)
         end
@@ -265,7 +257,7 @@ try
             Screen('FillRect', q.window, black);
             
             if q.photoDiodeRect(2)
-                Screen('FillRect', q.window, 255,q.photoDiodeRect )
+                Screen('FillRect', q.window, 0,q.photoDiodeRect ); % photodiode black for black screen
             end
             Screen('Flip',q.window);
             stimulusInfo.stimuli(currentStimIndex).endTime = toc; %record actual time taken

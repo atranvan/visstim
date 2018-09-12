@@ -64,7 +64,7 @@ p.addParamValue('screenClear', 1)
 % SpotHDHGBlack
 
 
-p.addParamValue('experimentType', 'SpotHDHGBlackLM');
+p.addParamValue('experimentType','SpotHDHGBlack');
  
 % testing mode:
 %0 turns off testing mode (assumes DAQ toolbox present, running on windows)
@@ -121,10 +121,10 @@ p.addParamValue('randMode', 3);                              % Randomisation of 
 
 % Experiment type specific parameters
 p.addParamValue('preDriftHoldTime', 1);                       % How long to hold the grating for, in seconds, before a drift
-p.addParamValue('driftTime',1);                               % How long to display a drifting grating for
+p.addParamValue('driftTime',2);                               % How long to display a drifting grating for
 p.addParamValue('postDriftHoldTime', 1);                      % How long to hold the grating for, in seconds, after a drift
 p.addParamValue('flipTime', 0.2);                             % How long each state (white or black) should be displayed for in flipStimulus
-p.addParamValue('postDriftGrayTime', 2);                    % How long to display gray screen for, in seconds, after a drift
+p.addParamValue('postDriftGrayTime', 4);                    % How long to display gray screen for, in seconds, after a drift
 p.addParamValue('plaidAngle', 90);                            % angle between two components of a plaid
 p.addParamValue('lumscreen', 255);                            % luminance of gray screen for fullscPulse stimulus
 p.addParamValue('blackscreenTime',4);                         % How long to display a black screen for fullscPulse and fullscLum stimulus
@@ -156,9 +156,9 @@ p.addParamValue('patchGridY', 3);
 p.addParamValue('postPatchPause', 1)                            % How long, in seconds, to leave after a patch. Has no effect on stimulus generation but is used by 2p triggering (Alex)
 p.addParamValue('patchSubset', [1 1 1;1 1 1;1 1 1])
 % Parameters for spot retinotopy
-p.addParamValue('locationX',1200);                               % coordinates of the spot center
+p.addParamValue('locationX',700);                               % coordinates of the spot center
 p.addParamValue('locationY',300);
-p.addParamValue('diameterDeg',50);                              % diameter of the spot, in degrees of visual angle
+p.addParamValue('diameterDeg',37);                              % diameter of the spot, in degrees of visual angle
 % Sparse Noise parameters
 p.addParamValue('spotSizeMean', 4.65);
 p.addParamValue('spotSizeRange', 3.35);
@@ -250,6 +250,8 @@ q.spaceFreqPixels(ii) = 1 / (2* q.mouseDistancePixels * tan((1 / q.spaceFreqDeg(
 %q.spaceFreqPixels(ii)
 end
 q.hz = 1/q.ifi;                                             % Screen flip frequency
+disp('flip frequency:')
+disp(q.hz)
 q.degperpix = (180/pi) * atan2(0.5 * q.screenWidthCm,q.mouseDistanceCm)/(0.5 * q.screenRect(3));
 disp(q.degperpix)
 %space_freq_pix = q.spaceFreqDeg*degperpix;

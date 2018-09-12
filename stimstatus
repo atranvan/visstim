@@ -1,7 +1,7 @@
 MATLAB initialised. Beginning PTB initialisation...Success!
-Beginning triggered SpotHDHGBlackLM experiment.
+Beginning triggered SpotHDHGBlack experiment.
 All preparations complete. Ready to begin
 Running baseline...
 Ready for trigger to begin stimulus...Receieved
-Beginning stimulus...Terminated early.
-Partial stimulus info saved to C:\Users\ranczLab\Documents\MATLAB\visstim\stimfiles\20180815_11_45_15_SpotHDHGBlackLM
+Beginning stimulus...Complete.
+Stimulus info saved to C:\Users\ranczLab\Documents\MATLAB\visstim\stimfiles\20180912_14_54_37_SpotHDHGBlack
